@@ -1,0 +1,4221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>THE VOICE: PROJECT ECHO — A Psychological Mystery Experience</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #020408;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #e2e8f0;
+    }
+    #canvas-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* Start / Awakening Blocker */
+    #start-blocker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #0a1120 0%, #020408 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      cursor: pointer;
+    }
+    .start-card {
+      max-width: 620px;
+      padding: 40px;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 30px rgba(56, 189, 248, 0.2);
+      backdrop-filter: blur(12px);
+    }
+    .start-title {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: 6px;
+      color: #f8fafc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+    }
+    .start-subtitle {
+      font-size: 14px;
+      color: #38bdf8;
+      letter-spacing: 3px;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .start-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #94a3b8;
+      margin-bottom: 30px;
+    }
+    .btn-start {
+      display: inline-block;
+      padding: 14px 36px;
+      background: #38bdf8;
+      color: #020408;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+    .btn-start:hover {
+      background: #7dd3fc;
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.7);
+    }
+
+    /* Eyelids Awakening Effect */
+    .eyelid {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #000;
+      z-index: 999;
+      pointer-events: none;
+      transition: height 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #eyelid-top { top: 0; }
+    #eyelid-bottom { bottom: 0; }
+
+    /* Crosshair Reticle */
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      z-index: 20;
+      pointer-events: none;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    #crosshair.active {
+      transform: translate(-50%, -50%) scale(2.4);
+      background: #38bdf8;
+      box-shadow: 0 0 12px #38bdf8;
+    }
+
+    /* Interact Prompt */
+    #interact-prompt {
+      position: absolute;
+      top: calc(50% + 24px);
+      left: 50%;
+      transform: translateX(-50%);
+      color: #f8fafc;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 10px rgba(56, 189, 248, 0.2);
+      z-index: 20;
+      pointer-events: none;
+      display: none;
+      text-transform: uppercase;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Protagonist Mind Subtitles - High Visibility HUD Card */
+    #mind-voice {
+      position: absolute;
+      bottom: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88%;
+      max-width: 780px;
+      text-align: left;
+      background: linear-gradient(135deg, rgba(8, 14, 26, 0.94), rgba(4, 7, 16, 0.98));
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 10px;
+      padding: 14px 24px;
+      color: #f8fafc;
+      z-index: 50;
+      pointer-events: none;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mind-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #38bdf8;
+    }
+    .mind-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+      animation: pulse-ring 1.8s infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+    .mind-content {
+      font-size: 15.5px;
+      font-style: italic;
+      color: #f8fafc;
+      letter-spacing: 0.3px;
+      line-height: 1.5;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.85);
+    }
+
+    /* Top Left Objective Card */
+    #hud-objective {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      background: rgba(10, 15, 29, 0.94);
+      border: 2px solid #38bdf8;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+      padding: 12px 28px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 520px;
+      max-width: 90vw;
+      text-align: center;
+      pointer-events: none;
+    }
+    #hud-hint-btn {
+      margin-top: 6px;
+      background: rgba(56, 189, 248, 0.18);
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      padding: 4px 16px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 1.5px;
+      transition: all 0.15s ease;
+    }
+    #hud-hint-btn:hover {
+      background: #38bdf8;
+      color: #030712;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    }
+    .obj-tag {
+      font-size: 11px;
+      color: #38bdf8;
+      font-weight: 800;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    #hud-objective-text {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    .obj-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .obj-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+    }
+    #hud-objective-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #f8fafc;
+      line-height: 1.4;
+    }
+
+    /* Inventory HUD */
+    #hud-inventory {
+      position: absolute;
+      top: 95px;
+      left: 24px;
+      z-index: 22;
+      display: flex;
+      gap: 8px;
+    }
+    .inv-item {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #fcd34d;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Floating Smartphone HUD (Top Right) */
+    #phone-container {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 330px;
+      background: rgba(11, 19, 34, 0.94);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.15);
+      z-index: 25;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      display: none;
+      flex-direction: column;
+    }
+    .phone-header {
+      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .phone-ai-brand {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .phone-ai-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+    }
+    .phone-battery {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .phone-battery.critical {
+      color: #ef4444;
+      animation: pulse-ring 0.8s infinite;
+    }
+
+    /* Phone Tab Bar */
+    .phone-tabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .phone-tab-btn {
+      flex: 1;
+      padding: 8px 0;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .phone-tab-btn.active {
+      color: #38bdf8;
+      border-bottom: 2px solid #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    /* Comms Tab View */
+    #phone-view-comms {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #waveform-canvas {
+      width: 100%;
+      height: 38px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .echo-chat-bubble {
+      background: rgba(30, 41, 59, 0.7);
+      border-left: 3px solid #38bdf8;
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: #e2e8f0;
+    }
+    .echo-speaker-tag {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #38bdf8;
+      margin-bottom: 3px;
+    }
+
+    /* Mini-Map Tab View */
+    #phone-view-map {
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .map-header-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 1px;
+    }
+    #floor-indicator-tag {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    #minimap-canvas {
+      width: 290px;
+      height: 200px;
+      background: #070d18;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 6px;
+    }
+
+    .phone-actions {
+      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .btn-phone-action {
+      flex: 1;
+      padding: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(30, 41, 59, 0.8);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-phone-action:hover {
+      background: rgba(51, 65, 85, 0.9);
+    }
+    .btn-smash {
+      background: rgba(220, 38, 38, 0.85);
+      border-color: #ef4444;
+      color: #fff;
+      display: none;
+    }
+    .btn-smash:hover {
+      background: #ef4444;
+    }
+
+    /* Ceiling Intercom Box (When Phone is Smashed) */
+    #intercom-box {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 320px;
+      background: rgba(20, 10, 10, 0.95);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(239, 68, 68, 0.2);
+      padding: 14px;
+      z-index: 25;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .intercom-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .intercom-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+    #intercom-text {
+      font-size: 13px;
+      color: #f8fafc;
+      line-height: 1.45;
+    }
+
+    /* Modals (Keypad & Terminal & Clues) */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 4, 8, 0.85);
+      z-index: 200;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(8px);
+    }
+    .terminal-card {
+      width: 520px;
+      max-width: 90%;
+      background: #090e17;
+      border: 1px solid #38bdf8;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(56, 189, 248, 0.25);
+      overflow: hidden;
+    }
+    .term-header {
+      padding: 12px 20px;
+      background: #0f172a;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .term-header h3 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #38bdf8;
+    }
+    .term-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .term-prompt {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+      font-family: monospace;
+    }
+    .term-display {
+      background: #020617;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 22px;
+      font-family: monospace;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 3px;
+      text-align: center;
+      min-height: 58px;
+    }
+    .keyboard-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+    }
+    .key-btn {
+      padding: 10px 0;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      color: #f8fafc;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.1s ease;
+    }
+    .key-btn:hover {
+      background: #38bdf8;
+      color: #020408;
+    }
+    .term-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-term-action {
+      flex: 1;
+      padding: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .btn-clear { background: #334155; color: #fff; }
+    .btn-submit { background: #38bdf8; color: #020408; }
+    .btn-close { background: #1e293b; color: #94a3b8; }
+
+    /* Clue Inspection Modal */
+    .inspect-card {
+      width: 480px;
+      max-width: 90%;
+      background: #0f172a;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .inspect-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #d4af37;
+      text-transform: uppercase;
+    }
+    .inspect-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    .inspect-desc {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      white-space: pre-line;
+    }
+    .btn-inspect-close {
+      margin-top: 10px;
+      padding: 10px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f8fafc;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Pause & Settings Modal [ESC] */
+    .settings-card {
+      width: 440px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .settings-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #f8fafc;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+    .settings-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .settings-label {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+    .settings-slider {
+      width: 100%;
+      height: 6px;
+      background: #1e293b;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    /* Explainable AI (XAI) Drawer */
+    #xai-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 380px;
+      height: 100%;
+      background: rgba(11, 19, 34, 0.96);
+      border-left: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+      z-index: 150;
+      display: none;
+      flex-direction: column;
+      backdrop-filter: blur(12px);
+    }
+    .xai-header {
+      padding: 16px 20px;
+      background: #0f172a;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .xai-header h3 {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #38bdf8;
+    }
+    .xai-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .xai-box {
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 6px;
+      padding: 12px;
+      border-left: 3px solid #38bdf8;
+    }
+    .xai-box-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .xai-box-content {
+      font-size: 13px;
+      color: #f8fafc;
+      line-height: 1.45;
+    }
+
+    /* Ending Cinematic Overlay */
+    #cinematic-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #020408;
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 2.0s ease;
+    }
+    #cinematic-overlay.active {
+      opacity: 1;
+    }
+    #mirror-canvas {
+      width: 520px;
+      height: 260px;
+      border-radius: 12px;
+      border: 3px solid #334155;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.95), 0 0 20px rgba(249, 115, 22, 0.3);
+      margin-bottom: 24px;
+    }
+    .reveal-card {
+      max-width: 680px;
+      text-align: center;
+      padding: 24px;
+    }
+    .reveal-tag {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #f97316;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .reveal-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    .reveal-desc {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: #94a3b8;
+      margin-bottom: 24px;
+    }
+    .btn-replay {
+      padding: 12px 32px;
+      background: #38bdf8;
+      color: #020408;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* Debug HUD */
+    #debug-hud {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 8px 12px;
+      font-size: 11px;
+      font-family: monospace;
+      color: #22c55e;
+      border-radius: 4px;
+      display: none;
+    }
+  </style>
+  <script src="three.min.js"></script>
+</head>
+<body>
+
+  <!-- 3D Canvas -->
+  <div id="canvas-container"></div>
+
+  <!-- Awakening / Start Blocker -->
+  <div id="start-blocker">
+    <div class="start-card">
+      <div class="start-title">THE VOICE</div>
+      <div class="start-subtitle">PROJECT ECHO</div>
+      <div class="start-desc">
+        You awaken inside an unfamiliar rainforest estate. Cold moonlight cuts through barred windows. A ringing smartphone lies nearby.
+        <br><br>
+        <strong>Controls:</strong> [W,A,S,D] Move &bull; [Mouse] Look &bull; [E / Click] Interact &bull; [Tab] Explainable AI &bull; [ESC] Settings
+      </div>
+      <button class="btn-start" id="start-btn">AWAKEN</button>
+    </div>
+  </div>
+
+  <!-- Eyelids -->
+  <div class="eyelid" id="eyelid-top"></div>
+  <div class="eyelid" id="eyelid-bottom"></div>
+
+  <!-- Reticle & Interaction Prompt -->
+  <div id="crosshair"></div>
+  <div id="interact-prompt">[E] EXAMINE</div>
+
+  <!-- Protagonist Mind-Voice -->
+  <div id="mind-voice">
+    <div class="mind-badge"><span class="mind-pulse"></span>🧠 INTERNAL THOUGHT</div>
+    <div class="mind-content" id="mind-content">"Ugh... my head is throbbing. That phone on the table is ringing... I should answer it."</div>
+  </div>
+
+  <!-- HUD Objective Card -->
+  <div id="hud-objective">
+    <div class="obj-tag">
+      <span class="obj-dot" id="obj-dot"></span>
+      CURRENT DIRECTIVE
+    </div>
+    <div id="hud-objective-text">INSPECT & ANSWER SMARTPHONE</div>
+    <button id="hud-hint-btn">💡 NEED A HINT? (CLICK OR PRESS 'H')</button>
+  </div>
+
+  <!-- Inventory HUD -->
+  <div id="hud-inventory">
+    <div class="inv-item" id="inv-key">🔑 BRASS KEY</div>
+    <div class="inv-item" id="inv-scotch">🍾 1994 SCOTCH</div>
+    <div class="inv-item" id="inv-usb">💾 NEURAL USB</div>
+  </div>
+
+  <!-- Floating Smartphone HUD -->
+  <div id="phone-container">
+    <div class="phone-header">
+      <div class="phone-ai-brand">
+        <span class="phone-ai-dot"></span>
+        ADAM v3.2 [ONLINE]
+      </div>
+      <div class="phone-battery" id="phone-battery-tag">⚡ 11%</div>
+    </div>
+    <div class="phone-tabs">
+      <button class="phone-tab-btn active" id="tab-btn-comms">COMMS</button>
+      <button class="phone-tab-btn" id="tab-btn-map">MINI-MAP</button>
+      <button class="phone-tab-btn" id="tab-btn-notes">NOTES (<span id="notes-count">0</span>)</button>
+    </div>
+    <div id="phone-view-comms">
+      <canvas id="waveform-canvas"></canvas>
+      <div class="echo-chat-bubble" id="echo-chat">
+        <div class="echo-speaker-tag">ADAM &bull; AI ARCHITECTURAL SYSTEM</div>
+        "Awaiting communication handshake..."
+      </div>
+    </div>
+    <div id="phone-view-map">
+      <div class="map-header-row">
+        <span>ESTATE SCHEMATIC</span>
+        <span id="floor-indicator-tag">FLOOR 1 (1F)</span>
+      </div>
+      <canvas id="minimap-canvas" width="290" height="200"></canvas>
+    </div>
+    <div class="phone-actions">
+      <button class="btn-phone-action" id="phone-hint-btn" style="background:#0284c7; color:#fff;">💡 GET HINT</button>
+      <button class="btn-phone-action" id="xai-btn">WHY DID ADAM DO THAT?</button>
+      <button class="btn-phone-action btn-smash" id="smash-btn">💥 SMASH PHONE</button>
+    </div>
+  </div>
+
+  <!-- Ceiling Intercom Box (When Phone is Smashed) -->
+  <div id="intercom-box">
+    <div class="intercom-tag">
+      <span class="intercom-dot"></span>
+      ESTATE OVERHEAD INTERCOM [ACTIVE]
+    </div>
+    <div id="intercom-text">"Warning: Facility integrity compromised."</div>
+  </div>
+
+  <!-- Terminal Modal (Keypad & Blast Door) -->
+  <div class="modal-overlay" id="terminal-modal">
+    <div class="terminal-card">
+      <div class="term-header">
+        <h3 id="term-title">PRIMARY BLAST DOOR TERMINAL</h3>
+        <span style="font-size:11px; color:#64748b; font-family:monospace;">ALPHANUMERIC MATRIX</span>
+      </div>
+      <div class="term-body">
+        <div class="term-prompt" id="term-prompt">Enter master override passphrase. Permutations exceed 10^14.</div>
+        <div class="term-display" id="term-display">_</div>
+        <div class="keyboard-grid" id="term-keyboard"></div>
+        <div class="term-actions">
+          <button class="btn-term-action btn-clear" id="btn-term-clear">CLEAR</button>
+          <button class="btn-term-action btn-submit" id="btn-term-autofill" style="display:none; background:#d4af37; color:#000;">AUTO-FILL CODE</button>
+          <button class="btn-term-action btn-submit" id="btn-term-submit">SUBMIT</button>
+          <button class="btn-term-action btn-close" id="btn-term-close">CLOSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clue Inspection Modal -->
+  <div class="modal-overlay" id="inspect-modal">
+    <div class="inspect-card">
+      <div class="inspect-title" id="inspect-category">PERSONAL BELONGINGS</div>
+      <div class="inspect-name" id="inspect-name">Item Name</div>
+      <div class="inspect-desc" id="inspect-desc">Item Description</div>
+      <button class="btn-inspect-close" id="btn-close-inspect">CLOSE [ESC]</button>
+    </div>
+  </div>
+
+  <!-- Pause & Settings Modal [ESC] -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="settings-card">
+      <div class="settings-title">SETTINGS & PAUSE</div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>Mouse Look Sensitivity</span>
+          <span id="sens-label">0.0022</span>
+        </div>
+        <input type="range" class="settings-slider" id="sens-slider" min="10" max="50" value="22">
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>Brightness / Exposure</span>
+          <span id="bright-label">1.00</span>
+        </div>
+        <input type="range" class="settings-slider" id="bright-slider" min="60" max="180" value="100">
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>ADAM Synthesized Voice</span>
+          <span id="voice-label">ENABLED</span>
+        </div>
+        <button class="btn-inspect-close" id="voice-toggle-btn" style="margin-top:0;">TOGGLE SPEECH</button>
+      </div>
+      <button class="btn-start" id="settings-resume-btn" style="width:100%; padding:10px;">RESUME</button>
+      <button class="btn-inspect-close" id="settings-restart-btn">RESTART GAME</button>
+    </div>
+  </div>
+
+  <!-- Explainable AI (XAI) Drawer -->
+  <div id="xai-drawer">
+    <div class="xai-header">
+      <h3>EXPLAINABLE AI ENGINE (XAI)</h3>
+      <button id="xai-close" style="background:none; border:none; color:#94a3b8; font-size:16px; cursor:pointer;">&times;</button>
+    </div>
+    <div class="xai-body">
+      <div class="xai-box">
+        <div class="xai-box-title">ACTIVE RULE & DIRECTIVE</div>
+        <div class="xai-box-content" id="xai-rule">RULE-01: PRIORITY EGRESS PROTOCOL</div>
+      </div>
+      <div class="xai-box">
+        <div class="xai-box-title">INTERNAL INFERENCE & RATIONALE</div>
+        <div class="xai-box-content" id="xai-rationale">Analyzing architectural pathways to facilitate exit traversal.</div>
+      </div>
+      <div class="xai-box">
+        <div class="xai-box-title">HEURISTIC CONFIDENCE</div>
+        <div class="xai-box-content" id="xai-confidence" style="color:#22c55e; font-weight:700;">98.4%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ending Cinematic Overlay -->
+  <div id="cinematic-overlay">
+    <canvas id="mirror-canvas"></canvas>
+    <div class="reveal-card">
+      <div class="reveal-tag">THE REVEAL &bull; REAR-VIEW MIRROR</div>
+      <div class="reveal-title" id="reveal-title">YOU WERE NEVER A STRANGER</div>
+      <div class="reveal-desc" id="reveal-desc">
+        As you turn the ignition key and look into the mirror, your heart stops.
+        The silver-grey swept hair. The sharp jawline. The piercing, familiar gaze staring back at you.
+        You are not a survivor investigating this estate.
+        <br><br>
+        <strong>You are Dr. Adrian Voss.</strong>
+        <br><br>
+        After your diagnosis with early-onset cognitive degeneration, you engineered ADAM to safeguard your neural identity. As your memory fractured, ADAM's protective protocols locked down the estate to keep you safe inside. The voice in your ear was your own creation.
+      </div>
+      <button class="btn-replay" onclick="window.location.reload();">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <!-- Debug HUD -->
+  <div id="debug-hud">DEBUG MODE [KEYS 1-0: JUMP ROOMS]</div>
+
+  <!-- GAME LOGIC SCRIPT -->
+  <script>
+    // --- SOUND ENGINE (WEB AUDIO API) ---
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.rainSource = null;
+      }
+      init() {
+        if (this.ctx) return;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioContext();
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+        this.startRainAmbience();
+      }
+      startRainAmbience() {
+        if (!this.ctx) return;
+        const bufferSize = this.ctx.sampleRate * 2;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.06;
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 850;
+        const gain = this.ctx.createGain();
+        gain.gain.value = 0.22;
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start();
+        this.rainSource = noise;
+      }
+      playHeartbeat() {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(65, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(35, this.ctx.currentTime + 0.16);
+        gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.2);
+      }
+      startPhoneRinging() {
+        if (!this.ctx || this.phoneRingInterval) return;
+        const ring = () => {
+          if (!this.ctx) return;
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc1.frequency.value = 853;
+          osc2.frequency.value = 960;
+          gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc1.start(); osc2.start();
+          osc1.stop(this.ctx.currentTime + 1.25);
+          osc2.stop(this.ctx.currentTime + 1.25);
+        };
+        ring();
+        this.phoneRingInterval = setInterval(ring, 3000);
+      }
+      stopPhoneRinging() {
+        if (this.phoneRingInterval) {
+          clearInterval(this.phoneRingInterval);
+          this.phoneRingInterval = null;
+        }
+      }
+      playDoorCreak() {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(95, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(145, this.ctx.currentTime + 0.4);
+        osc.frequency.linearRampToValueAtTime(80, this.ctx.currentTime + 0.7);
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 450;
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.75);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.8);
+      }
+      playDoorRattle() {
+        if (!this.ctx) return;
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = 90 + Math.random() * 40;
+            gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.09);
+          }, i * 65);
+        }
+      }
+      playHydraulicHiss() {
+        if (!this.ctx) return;
+        const bufferSize = this.ctx.sampleRate * 1.5;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.2;
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(2400, this.ctx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 1.4);
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.6, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.45);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start();
+      }
+      playChime(freq = 880) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.38);
+      }
+      playFootstep() {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(70 + Math.random() * 20, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.11);
+      }
+      playThoughtChime() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [520, 780, 1040].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+          gain.gain.setValueAtTime(0.06 / (idx + 1), now + idx * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.04 + 1.1);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.04);
+          osc.stop(now + idx * 0.04 + 1.15);
+        });
+      }
+      playAlarm() {
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+          osc.frequency.linearRampToValueAtTime(880, this.ctx.currentTime + 0.35);
+          osc.frequency.linearRampToValueAtTime(440, this.ctx.currentTime + 0.7);
+          gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.75);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.8);
+        } catch (e) {}
+      }
+      startFireCrackling() {
+        if (!this.ctx) return;
+        const bufferSize = this.ctx.sampleRate * 2;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.15;
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 1200;
+        const gain = this.ctx.createGain();
+        gain.gain.value = 0.35;
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start();
+      }
+    }
+    const audio = new SoundEngine();
+
+    // --- SYNTHESIZED SPEECH (ADAM VOICE) ---
+    let speechEnabled = true;
+    function speakADAM(text) {
+      if (!speechEnabled || !window.speechSynthesis) return;
+      try {
+        window.speechSynthesis.cancel();
+        const clean = text.replace(/<[^>]*>/g, '').replace(/[^\w\s\.,\?!']/g, '');
+        const utter = new SpeechSynthesisUtterance(clean);
+        utter.rate = 0.95;
+        utter.pitch = 0.92;
+        const voices = window.speechSynthesis.getVoices();
+        const maleVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Male') || v.name.includes('David') || v.name.includes('Mark')));
+        if (maleVoice) utter.voice = maleVoice;
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+
+    // --- STATE MACHINE ---
+    const STATE = {
+      WAKEUP: 0,
+      PHONE_ANSWERED: 1,
+      DECOY_DISCOVERED: 2,
+      LIBRARY_SEARCHED: 3,
+      STAIRWELL_UNLOCKED: 4,
+      GROUND_FLOOR_REACHED: 5,
+      STOREROOM_DISCOVERED: 6,
+      BATTERY_CRITICAL: 7,
+      PHONE_SMASHED: 8,
+      STOREROOM_UNLOCKED: 9,
+      CRT_RIDDLE_SOLVED: 10,
+      ARSON_COMMENCED: 11,
+      BLAST_DOOR_OPENED: 12,
+      ESCAPED: 13
+    };
+    let currentStep = STATE.WAKEUP;
+    let batteryLevel = 11;
+    let phoneSmashed = false;
+    let hasStairwellKey = false;
+    let hasScotch = false;
+    let hasUSB = false;
+    let hasPasskey = false;
+    let hasBurnedServers = false;
+
+    // --- EASY MODE: PLAYER NOTES & HINT SYSTEM ---
+    const playerNotes = new Map();
+    function addPlayerNote(title, content) {
+      if (playerNotes.has(title)) return;
+      playerNotes.set(title, content);
+
+      const countSpan = document.getElementById('notes-count');
+      if (countSpan) countSpan.textContent = playerNotes.size;
+
+      const emptyMsg = document.getElementById('notes-empty');
+      if (emptyMsg) emptyMsg.style.display = 'none';
+
+      const listDiv = document.getElementById('notes-list');
+      if (listDiv) {
+        const card = document.createElement('div');
+        card.style.background = 'rgba(15, 23, 42, 0.7)';
+        card.style.border = '1px solid rgba(56, 189, 248, 0.25)';
+        card.style.borderRadius = '6px';
+        card.style.padding = '8px 10px';
+        card.innerHTML = `<div style="font-size:10px; color:#38bdf8; font-weight:800; letter-spacing:1px; margin-bottom:2px;">📝 ${title}</div>
+                          <div style="font-size:12px; color:#e2e8f0; line-height:1.3;">${content}</div>`;
+        listDiv.appendChild(card);
+      }
+      audio.playChime(660);
+    }
+
+    let hintCountForStep = 0;
+    let lastHintStep = -1;
+    function triggerPlayerHint() {
+      if (lastHintStep !== currentStep) {
+        hintCountForStep = 0;
+        lastHintStep = currentStep;
+      }
+      hintCountForStep++;
+
+      let generalHint = "";
+      let exactHint = "";
+
+      if (currentStep === STATE.WAKEUP) {
+        generalHint = "The smartphone is ringing right here in the Lounge.";
+        exactHint = "Walk up to the glass coffee table in front of the crackling fireplace and press [E] to answer the phone.";
+      } else if (currentStep === STATE.PHONE_ANSWERED) {
+        generalHint = "Head out of the Lounge into the Central Hallway and walk north toward the green exit sign.";
+        exactHint = "Walk all the way north down the hallway (Z: -11) and press [E] on the metal shutter to check the exit.";
+      } else if (currentStep === STATE.DECOY_DISCOVERED) {
+        generalHint = "The north exit is a lethal drop! Search the 1F Library on the east side for a key.";
+        exactHint = "In the Library (doorway at X: 1.6, Z: 0), walk up to the glowing golden beacon on the reading table and take the Brass Stairwell Key.";
+      } else if (currentStep === STATE.LIBRARY_SEARCHED) {
+        generalHint = "Use the Brass Key to unlock the oak stairwell door on the west wall of the hallway.";
+        exactHint = "Walk to the heavy wooden door at X: 1.6, Z: -6.0 with the brass lock. Press [E] to unlock the Stairwell.";
+      } else if (currentStep === STATE.STAIRWELL_UNLOCKED) {
+        generalHint = "Walk through the opened stairwell door and descend the wooden stairs to the Ground Floor.";
+        exactHint = "Follow the 12 steps down to Ground Level Landing. Inspect the architectural schematic on the wall.";
+      } else if (currentStep <= STATE.PHONE_SMASHED) {
+        generalHint = "In the Ground Floor utility corridor, look at the bright yellow sticky note on the wall next to the keypad.";
+        exactHint = "The sticky note right beside the keypad says 'CODE: ADAM'. Press [E] on the keypad, enter 'ADAM' (or click Autofill), and unseal the lab.";
+      } else if (currentStep === STATE.STOREROOM_UNLOCKED) {
+        generalHint = "Inside the AI Lab, read the official document on the desk next to the CRT monitor.";
+        exactHint = "Inspect the printed document for passkey 'VOSS-1994-OMEGA'. Enter it into the CRT terminal, then pick up the Neural USB Drive.";
+      } else if (currentStep === STATE.CRT_RIDDLE_SOLVED) {
+        generalHint = "The blast door is locked by live AI defense. Go retrieve something flammable from the Dining Room.";
+        exactHint = "Follow the hallway east into the Kitchen, then south into the Dining Room. Pick up the bottle of 1994 Single Malt Scotch from the antique bar cart.";
+      } else if (currentStep === STATE.ARSON_COMMENCED) {
+        generalHint = "Flames block the direct hallway! Follow the loop through the Kitchen and Dining Room to reach the Foyer.";
+        exactHint = "Run east through the Kitchen, south through the Dining Room, and enter the Main Foyer through the southern double doors. Press [E] on the Blast Door terminal.";
+      } else if (currentStep === STATE.BLAST_DOOR_OPENED) {
+        generalHint = "The blast doors are open! Run outside into the courtyard rain to the getaway car.";
+        exactHint = "Walk up to the black off-road SUV in the driveway (Z: 22.0) and press [E] to escape.";
+      }
+
+      const isExact = (hintCountForStep % 2 === 0);
+      const textToShow = isExact ? exactHint : generalHint;
+      const prefix = isExact ? "🎯 EXACT LOCATION: " : "💡 GENERAL HINT: ";
+
+      setMindText(prefix + textToShow);
+      audio.playThoughtChime();
+      if (!phoneSmashed && document.getElementById('phone-container').style.display === 'flex') {
+        setEchoChat(textToShow, isExact ? 'HINT-02: EXACT LOCATION' : 'HINT-01: DIRECTION', 'Guiding subject along valid egress vector.', '100%');
+      }
+    }
+    let idleTimer = 0;
+    const visitedRooms = new Set(['LOUNGE']);
+
+    // --- PROCEDURAL TEXTURES ---
+    function drawAdrianVossFace(ctx, cx, cy, scale = 1.0, isMirror = false) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(scale, scale);
+
+      // Shadow behind head
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      ctx.ellipse(0, 15, 95, 125, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tailored Charcoal Wool Suit Jacket & Shoulders
+      ctx.fillStyle = '#111827';
+      ctx.beginPath();
+      ctx.moveTo(-160, 240);
+      ctx.lineTo(-100, 120);
+      ctx.lineTo(-45, 110);
+      ctx.lineTo(0, 145);
+      ctx.lineTo(45, 110);
+      ctx.lineTo(100, 120);
+      ctx.lineTo(160, 240);
+      ctx.closePath();
+      ctx.fill();
+
+      // Crisp White Shirt Collar
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.moveTo(-45, 110);
+      ctx.lineTo(0, 155);
+      ctx.lineTo(45, 110);
+      ctx.lineTo(35, 95);
+      ctx.lineTo(-35, 95);
+      ctx.closePath();
+      ctx.fill();
+
+      // Deep Crimson Silk Necktie
+      ctx.fillStyle = '#881337';
+      ctx.beginPath();
+      ctx.moveTo(-12, 130);
+      ctx.lineTo(12, 130);
+      ctx.lineTo(16, 240);
+      ctx.lineTo(-16, 240);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#9f1239';
+      ctx.beginPath();
+      ctx.moveTo(-12, 130);
+      ctx.lineTo(12, 130);
+      ctx.lineTo(0, 152);
+      ctx.closePath();
+      ctx.fill();
+
+      // Neck with Anatomical Shading
+      const neckGrad = ctx.createLinearGradient(-35, 0, 35, 0);
+      neckGrad.addColorStop(0, '#a37155');
+      neckGrad.addColorStop(0.4, '#c89578');
+      neckGrad.addColorStop(1, '#8b5a40');
+      ctx.fillStyle = neckGrad;
+      ctx.beginPath();
+      ctx.moveTo(-32, 40);
+      ctx.lineTo(32, 40);
+      ctx.lineTo(38, 110);
+      ctx.lineTo(-38, 110);
+      ctx.closePath();
+      ctx.fill();
+
+      // Head / Cranium - Base Skin Gradient
+      const faceGrad = ctx.createRadialGradient(-15, -20, 10, 0, 0, 95);
+      faceGrad.addColorStop(0, '#eac6ad');
+      faceGrad.addColorStop(0.5, '#d4a282');
+      faceGrad.addColorStop(0.85, '#b97f61');
+      faceGrad.addColorStop(1, '#8f573c');
+      ctx.fillStyle = faceGrad;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 72, 94, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Piercing Eyes
+      [-26, 26].forEach((eyeX, idx) => {
+        // Eye White (Sclera)
+        ctx.fillStyle = '#f1f5f9';
+        ctx.beginPath();
+        ctx.ellipse(eyeX, -8, 13, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Icy Blue / Steel Iris (Piercing Intellectual Gaze)
+        const irisGrad = ctx.createRadialGradient(eyeX, -8, 1, eyeX, -8, 6.5);
+        irisGrad.addColorStop(0, '#7dd3fc');
+        irisGrad.addColorStop(0.6, '#0284c7');
+        irisGrad.addColorStop(1, '#0c4a6e');
+        ctx.fillStyle = irisGrad;
+        ctx.beginPath();
+        ctx.arc(eyeX, -8, 6.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Deep Pupil
+        ctx.fillStyle = '#020617';
+        ctx.beginPath();
+        ctx.arc(eyeX, -8, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sharp Specular Catchlight
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(eyeX - 1.8, -10.2, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyelid line
+        ctx.strokeStyle = '#382015';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(eyeX - 14, -7);
+        ctx.quadraticCurveTo(eyeX, -15, eyeX + 14, -7);
+        ctx.stroke();
+      });
+
+      // Distinguished Grey Eyebrows
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.moveTo(-45, -20); ctx.quadraticCurveTo(-26, -26, -10, -18);
+      ctx.quadraticCurveTo(-26, -22, -45, -20);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(45, -20); ctx.quadraticCurveTo(26, -26, 10, -18);
+      ctx.quadraticCurveTo(26, -22, 45, -20);
+      ctx.fill();
+
+      // Aquiline Nose
+      ctx.strokeStyle = 'rgba(110, 60, 40, 0.45)';
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.moveTo(-4, -15); ctx.lineTo(-5, 14); ctx.lineTo(5, 14);
+      ctx.stroke();
+
+      // Firm, Thoughtful Lips
+      ctx.fillStyle = '#b26859';
+      ctx.beginPath();
+      ctx.moveTo(-18, 32); ctx.quadraticCurveTo(0, 30, 18, 32); ctx.quadraticCurveTo(0, 36, -18, 32);
+      ctx.fill();
+
+      // Swept-Back Silver-Grey Hair
+      const hairGrad = ctx.createLinearGradient(0, -90, 0, 0);
+      hairGrad.addColorStop(0, '#cbd5e1');
+      hairGrad.addColorStop(0.35, '#94a3b8');
+      hairGrad.addColorStop(0.8, '#475569');
+      hairGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = hairGrad;
+
+      ctx.beginPath();
+      ctx.moveTo(-74, -20);
+      ctx.quadraticCurveTo(-82, -85, 0, -96);
+      ctx.quadraticCurveTo(82, -85, 74, -20);
+      ctx.quadraticCurveTo(65, -60, 0, -70);
+      ctx.quadraticCurveTo(-65, -60, -74, -20);
+      ctx.closePath();
+      ctx.fill();
+
+      // Silver Temple strands
+      ctx.fillStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.moveTo(-70, -25); ctx.lineTo(-60, 10); ctx.lineTo(-52, -15); ctx.closePath(); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(70, -25); ctx.lineTo(60, 10); ctx.lineTo(52, -15); ctx.closePath(); ctx.fill();
+
+      ctx.restore();
+    }
+
+    // --- HIGH-FIDELITY ATMOSPHERIC TEXTURES (MATCHING REFERENCE IMAGES) ---
+
+    // Reference Image 2: Peeling Victorian Green Damask Wallpaper with Aged Plaster Underneath
+    function createVintageWallpaperTexture() {
+      const c = document.createElement('canvas');
+      c.width = 1024; c.height = 1024;
+      const ctx = c.getContext('2d');
+
+      // Dark emerald/moss velvet gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, 1024);
+      bgGrad.addColorStop(0, '#0f2418');
+      bgGrad.addColorStop(0.5, '#0a1a11');
+      bgGrad.addColorStop(1, '#06130b');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      // Fine vertical wallpaper seams & shading
+      for (let x = 0; x < 1024; x += 128) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.fillRect(x, 0, 3, 1024);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+        ctx.fillRect(x + 3, 0, 1, 1024);
+      }
+
+      // Ornate Gold/Bronze Damask Floral Medallions
+      ctx.strokeStyle = '#b39556';
+      ctx.fillStyle = '#8f743a';
+      ctx.lineWidth = 2.2;
+      for (let y = 64; y < 1024; y += 128) {
+        for (let x = 64; x < 1024; x += 128) {
+          ctx.beginPath();
+          ctx.ellipse(x, y, 12, 18, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Acanthus leaf flourishes
+          ctx.beginPath();
+          ctx.moveTo(x, y - 18);
+          ctx.bezierCurveTo(x - 22, y - 38, x - 15, y - 55, x, y - 62);
+          ctx.bezierCurveTo(x + 15, y - 55, x + 22, y - 38, x, y - 18);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(x, y + 18);
+          ctx.bezierCurveTo(x - 20, y + 36, x - 12, y + 48, x, y + 54);
+          ctx.bezierCurveTo(x + 12, y + 48, x + 20, y + 36, x, y + 18);
+          ctx.stroke();
+        }
+      }
+
+      // Peeling Wallpaper Patches exposing rough aged plaster underneath (Reference Image 2)
+      const peelPatches = [
+        [180, 220, 140, 90],
+        [640, 500, 190, 130],
+        [320, 780, 120, 80],
+        [800, 140, 110, 70]
+      ];
+      peelPatches.forEach(([px, py, pw, ph]) => {
+        ctx.fillStyle = '#2d271f';
+        ctx.beginPath();
+        ctx.ellipse(px + pw/2, py + ph/2, pw/2, ph/2, Math.PI * 0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#1a1611';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(px + 20, py + 30);
+        ctx.lineTo(px + pw - 20, py + ph - 20);
+        ctx.lineTo(px + pw - 10, py + ph - 5);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#473d2d';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      });
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(3, 2);
+      return tex;
+    }
+
+    // Reference Image 3: Reflective Polished Hardwood Floorboards
+    function createFloorPlankTexture() {
+      const c = document.createElement('canvas');
+      c.width = 1024; c.height = 1024;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#110b07';
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      const plankHeight = 64;
+      for (let i = 0; i < 16; i++) {
+        const y = i * plankHeight;
+        const tint = Math.sin(i * 1.8) * 12;
+        ctx.fillStyle = `rgb(${22 + tint}, ${14 + tint/2}, ${9 + tint/3})`;
+        ctx.fillRect(0, y, 1024, plankHeight - 2);
+
+        // Deep groove bevel seam
+        ctx.fillStyle = '#040201';
+        ctx.fillRect(0, y + plankHeight - 2, 1024, 2);
+
+        // Individual plank end-stagger joints
+        const jointX = (i * 380) % 1024;
+        ctx.fillRect(jointX, y, 2, plankHeight - 2);
+
+        // Wood grain striations
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+        for (let g = 0; g < 5; g++) {
+          ctx.fillRect(0, y + 6 + g * 11, 1024, 1);
+        }
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(4, 8);
+      return tex;
+    }
+
+    function createTileFloorTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#0b1120';
+      ctx.fillRect(0, 0, 512, 512);
+      ctx.fillStyle = '#172554';
+      for (let y = 0; y < 512; y += 64) {
+        for (let x = 0; x < 512; x += 64) {
+          if ((x / 64 + y / 64) % 2 === 0) {
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(x + 2, y + 2, 60, 60);
+          } else {
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(x + 2, y + 2, 60, 60);
+          }
+        }
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(4, 4);
+      return tex;
+    }
+
+    function createDoorPanelTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 1024;
+      const ctx = c.getContext('2d');
+      // Warm Victorian Mahogany base
+      ctx.fillStyle = '#422214';
+      ctx.fillRect(0, 0, 512, 1024);
+
+      // Subtle vertical woodgrain lines
+      ctx.fillStyle = '#351a0e';
+      for (let i = 0; i < 512; i += 6) {
+        if ((i * 37) % 7 < 4) {
+          ctx.fillRect(i, 0, 2 + ((i % 3)), 1024);
+        }
+      }
+
+      // Outer stile border highlights
+      ctx.strokeStyle = '#5a301a';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(10, 10, 492, 1004);
+
+      // 4 Deeply Recessed Panels with Beveled Molding
+      [
+        [48, 50, 416, 195],
+        [48, 280, 416, 195],
+        [48, 520, 416, 195],
+        [48, 755, 416, 195]
+      ].forEach(([x, y, w, h]) => {
+        // Deep shadow outer border
+        ctx.fillStyle = '#1c0c05';
+        ctx.fillRect(x - 8, y - 8, w + 16, h + 16);
+        // Beveled warm golden highlight trim
+        ctx.fillStyle = '#6b3a20';
+        ctx.fillRect(x - 4, y - 4, w + 8, h + 8);
+        // Inner shadow
+        ctx.fillStyle = '#220e06';
+        ctx.fillRect(x - 1, y - 1, w + 2, h + 2);
+        // Recessed panel face with warm tone
+        ctx.fillStyle = '#33190d';
+        ctx.fillRect(x, y, w, h);
+        // Panel center subtle grain
+        ctx.fillStyle = '#3c1e10';
+        ctx.fillRect(x + 12, y + 12, w - 24, h - 24);
+      });
+      return new THREE.CanvasTexture(c);
+    }
+
+    function createPortraitTexture() {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 320;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#070b12';
+      ctx.fillRect(0, 0, 256, 320);
+
+      const grad = ctx.createRadialGradient(128, 140, 20, 128, 140, 120);
+      grad.addColorStop(0, '#3b2514');
+      grad.addColorStop(1, '#070b12');
+      ctx.fillStyle = grad;
+      ctx.fillRect(10, 10, 236, 300);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.ellipse(128, 260, 70, 60, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.arc(128, 140, 36, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.arc(128, 130, 38, Math.PI, 0);
+      ctx.fill();
+
+      ctx.fillStyle = '#d4af37';
+      ctx.fillRect(60, 295, 136, 16);
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 9px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('DR. ADRIAN VOSS • 1994', 128, 307);
+
+      return new THREE.CanvasTexture(c);
+    }
+
+    function createFloorPlanTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, 512, 512);
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 16px monospace';
+      ctx.fillText('ESTATE GROUND LEVEL SCHEMATIC', 30, 40);
+
+      ctx.strokeRect(50, 70, 160, 140);
+      ctx.fillText('AI ARCHIVE (NW)', 60, 140);
+      ctx.strokeRect(250, 70, 180, 140);
+      ctx.fillText('KITCHEN (NE)', 270, 140);
+      ctx.strokeRect(250, 240, 180, 150);
+      ctx.fillText('DINING (SE)', 270, 310);
+      ctx.strokeRect(100, 240, 120, 150);
+      ctx.fillText('FOYER (S)', 120, 310);
+
+      ctx.strokeStyle = '#f59e0b';
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(130, 210);
+      ctx.lineTo(340, 210);
+      ctx.lineTo(340, 240);
+      ctx.lineTo(340, 390);
+      ctx.lineTo(220, 390);
+      ctx.stroke();
+
+      ctx.fillStyle = '#ef4444';
+      ctx.font = '12px monospace';
+      ctx.fillText('PRIMARY EGRESS LOOP', 140, 440);
+
+      return new THREE.CanvasTexture(c);
+    }
+
+    // Global Materials with PolygonOffset to prevent Z-Fighting at all wall/floor/ceiling junctions
+    const wallpaperMat = new THREE.MeshStandardMaterial({
+      map: createVintageWallpaperTexture(),
+      roughness: 0.75,
+      metalness: 0.08
+    });
+    const woodFloorMat = new THREE.MeshStandardMaterial({
+      map: createFloorPlankTexture(),
+      roughness: 0.22, // Rich specular reflections (Reference Image 3)
+      metalness: 0.18,
+      polygonOffset: true,
+      polygonOffsetFactor: 1,
+      polygonOffsetUnits: 1
+    });
+    const tileFloorMat = new THREE.MeshStandardMaterial({
+      map: createTileFloorTexture(),
+      roughness: 0.22,
+      metalness: 0.20,
+      polygonOffset: true,
+      polygonOffsetFactor: 1,
+      polygonOffsetUnits: 1
+    });
+    const wainscotWoodMat = new THREE.MeshStandardMaterial({
+      color: 0x482717,
+      roughness: 0.32,
+      metalness: 0.10,
+      emissive: 0x120804
+    });
+    const ceilingMat = new THREE.MeshStandardMaterial({
+      color: 0x080c18,
+      roughness: 0.95,
+      polygonOffset: true,
+      polygonOffsetFactor: 1,
+      polygonOffsetUnits: 1
+    });
+    const brassMat = new THREE.MeshStandardMaterial({
+      color: 0xd4af37,
+      metalness: 0.88,
+      roughness: 0.22
+    });
+    const mahoganyDoorMat = new THREE.MeshStandardMaterial({
+      map: createDoorPanelTexture(),
+      roughness: 0.28,
+      metalness: 0.10,
+      emissive: 0x180c06,
+      emissiveIntensity: 0.5
+    });
+
+    // --- THREE.JS SCENE SETUP ---
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x060911, 0.045);
+
+    const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.rotation.order = 'YXZ';
+    camera.position.set(-4.2, 5.05, 8.0); // Open floor in 1F Lounge
+    let pitch = -0.22, yaw = Math.PI; // Facing South directly at the glowing smartphone
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', precision: 'highp' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    container.appendChild(renderer.domElement);
+
+    // Ambient Moonlight
+    const ambientLight = new THREE.AmbientLight(0x1e293b, 0.7);
+    scene.add(ambientLight);
+
+    // Moonlight Directional (Calibrated bias to eliminate shadow acne on walls)
+    const moonLight = new THREE.DirectionalLight(0x93c5fd, 1.85);
+    moonLight.position.set(-15, 22, 10);
+    moonLight.castShadow = true;
+    moonLight.shadow.bias = -0.0006;
+    moonLight.shadow.normalBias = 0.035;
+    moonLight.shadow.mapSize.set(2048, 2048);
+    moonLight.shadow.camera.left = -22;
+    moonLight.shadow.camera.right = 22;
+    moonLight.shadow.camera.top = 22;
+    moonLight.shadow.camera.bottom = -22;
+    moonLight.shadow.camera.near = 1.0;
+    moonLight.shadow.camera.far = 70.0;
+    scene.add(moonLight);
+
+    // --- AABB COLLISION & INTERACTIVE SYSTEM ---
+    const colliders = []; // Solid obstacles & walls: { minX, maxX, minZ, maxZ, minY, maxY, disabled, name }
+    const interactiveObjects = [];
+
+    function addCollider(minX, maxX, minZ, maxZ, minY, maxY, name = '') {
+      colliders.push({ minX, maxX, minZ, maxZ, minY, maxY, disabled: false, name });
+    }
+
+    function registerInteractive(mesh, name, prompt) {
+      mesh.name = name;
+      mesh.interactPrompt = prompt;
+      interactiveObjects.push(mesh);
+    }
+
+    // Helper: Build thick solid wall with collider
+    function buildWall(x, y, z, w, h, d, mat = wallpaperMat, name = '') {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+      mesh.position.set(x, y, z);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+      addCollider(x - w/2, x + w/2, z - d/2, z + d/2, y - h/2, y + h/2, name);
+      return mesh;
+    }
+
+    // --- ORNATE ARCHITECTURAL DETAILS & WALL SCONCES (REFERENCE IMAGE 2 & 3) ---
+
+    // Wall Sconce with Curved Brass Neck & Glowing Frosted Glass Orb Shade
+    const sconceLights = [];
+    function createWallSconce(x, y, z, rotY = 0) {
+      const g = new THREE.Group();
+      g.position.set(x, y, z);
+      g.rotation.y = rotY;
+
+      // Brass Circular Backplate
+      const backplate = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.02, 16), brassMat);
+      backplate.rotation.x = Math.PI / 2;
+      g.add(backplate);
+
+      // Curved Brass Neck Arm
+      const arm = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.015, 8, 16, Math.PI * 0.75), brassMat);
+      arm.position.set(0, 0.05, 0.08);
+      arm.rotation.z = Math.PI * 0.2;
+      g.add(arm);
+
+      // Glowing Frosted Milk-Glass Orb Shade (Reference Image 2)
+      const orb = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 24, 24),
+        new THREE.MeshStandardMaterial({
+          color: 0xfff7ed,
+          emissive: 0xffedd5,
+          emissiveIntensity: 2.2,
+          roughness: 0.2
+        })
+      );
+      orb.position.set(0, 0.12, 0.16);
+      g.add(orb);
+
+      // Warm Amber Point Light casting rich chiaroscuro shadows on peeling wallpaper
+      const light = new THREE.PointLight(0xffa834, 1.75, 6.5, 2.0);
+      light.position.set(0, 0.12, 0.18);
+      g.add(light);
+
+      scene.add(g);
+      sconceLights.push({ light, z });
+      return { group: g, light };
+    }
+
+    // Atmospheric Floating Dust Particles (Reference Image 1, 2, 3)
+    const dustCount = 150;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPositions = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) {
+      dustPositions[i*3] = (Math.random() - 0.5) * 12;
+      dustPositions[i*3+1] = 3.8 + Math.random() * 2.8;
+      dustPositions[i*3+2] = (Math.random() - 0.5) * 24;
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+    const dustMat = new THREE.PointsMaterial({
+      color: 0xffedd5,
+      size: 0.04,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending
+    });
+    const dustParticles = new THREE.Points(dustGeo, dustMat);
+    scene.add(dustParticles);
+
+    // Gothic Multi-Pane Window with Volumetric Moonlight Beam (Reference Image 1)
+    function createMoonlightWindow(x, y, z, rotY = 0) {
+      const g = new THREE.Group();
+      g.position.set(x, y, z);
+      g.rotation.y = rotY;
+
+      // Heavy Carved Wooden Window Frame
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.16, 2.4, 1.8), wainscotWoodMat);
+      g.add(frame);
+
+      // Glass Panes with Dark Leaded Mullions
+      const glass = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.6, 2.2),
+        new THREE.MeshStandardMaterial({
+          color: 0x38bdf8,
+          emissive: 0x1e3a8a,
+          emissiveIntensity: 0.6,
+          roughness: 0.1,
+          metalness: 0.8,
+          transparent: true,
+          opacity: 0.5
+        })
+      );
+      glass.rotation.y = Math.PI / 2;
+      g.add(glass);
+
+      // Volumetric Moonlight Shaft Cone
+      const beamGeo = new THREE.CylinderGeometry(0.4, 2.0, 4.5, 16, 1, true);
+      const beamMat = new THREE.MeshBasicMaterial({
+        color: 0x60a5fa,
+        transparent: true,
+        opacity: 0.12,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+      const beam = new THREE.Mesh(beamGeo, beamMat);
+      beam.rotation.z = Math.PI / 4;
+      beam.position.set(1.6, -0.6, 0);
+      g.add(beam);
+
+      scene.add(g);
+      return g;
+    }
+
+    // --- ARCHITECTURAL HINGED DOORS & CASINGS ---
+    const doors = [];
+    function createHingedDoor({ name, roomName, x, y, zc, hingeSide = 1, isLocked = false, lockedReason = null }) {
+      // zc: Center of 1.20m doorway opening ([zc - 0.60, zc + 0.60])
+      const doorAssembly = new THREE.Group();
+
+      // 1. Dark Mahogany Architectural Door Casing (Jambs, Header & Threshold)
+      // Left Jamb (at zc - 0.60)
+      const leftJamb = new THREE.Mesh(new THREE.BoxGeometry(0.24, 2.50, 0.08), wainscotWoodMat);
+      leftJamb.position.set(x, y + 1.25, zc - 0.60);
+      leftJamb.castShadow = true;
+      leftJamb.receiveShadow = true;
+      doorAssembly.add(leftJamb);
+
+      // Right Jamb (at zc + 0.60)
+      const rightJamb = new THREE.Mesh(new THREE.BoxGeometry(0.24, 2.50, 0.08), wainscotWoodMat);
+      rightJamb.position.set(x, y + 1.25, zc + 0.60);
+      rightJamb.castShadow = true;
+      rightJamb.receiveShadow = true;
+      doorAssembly.add(rightJamb);
+
+      // Header Architrave (top molding spanning above the 1.20m opening)
+      const headerCasing = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.12, 1.36), wainscotWoodMat);
+      headerCasing.position.set(x, y + 2.50 + 0.06, zc);
+      headerCasing.castShadow = true;
+      doorAssembly.add(headerCasing);
+
+      // Decorative Crown Molding Architrave (Reference Image 2 & 3)
+      const crownMolding = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.06, 1.44), wainscotWoodMat);
+      crownMolding.position.set(x, y + 2.50 + 0.15, zc);
+      doorAssembly.add(crownMolding);
+
+      // Overhead Doorway Sconce Light (Illuminates Door, Frame & Handle)
+      const doorLight = new THREE.PointLight(0xffdfa8, 1.35, 4.2, 2.0);
+      doorLight.position.set(x, y + 2.70, zc);
+      doorAssembly.add(doorLight);
+
+      const sconceMount = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.04, 12), brassMat);
+      sconceMount.position.set(x, y + 2.68, zc);
+      doorAssembly.add(sconceMount);
+
+      // Antique Brass Floor Threshold Plate
+      const threshold = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.02, 1.24), brassMat);
+      threshold.position.set(x, y + 0.01, zc);
+      doorAssembly.add(threshold);
+
+      // 2. Hinged Door Leaf Pivot Group
+      // Position pivot exactly at the hinge jamb: if hingeSide == 1 (hinged at zc - 0.56) or -1 (hinged at zc + 0.56)
+      const pivotZ = hingeSide === 1 ? (zc - 0.56) : (zc + 0.56);
+      const doorGroup = new THREE.Group();
+      doorGroup.position.set(x, y, pivotZ);
+
+      // Door Leaf Mesh (1.16m wide, 2.46m high, 0.06m thick)
+      const leafOffsetZ = hingeSide === 1 ? 0.58 : -0.58;
+      const doorMesh = new THREE.Mesh(new THREE.BoxGeometry(0.06, 2.46, 1.16), mahoganyDoorMat);
+      doorMesh.position.set(0, 1.23, leafOffsetZ);
+      doorMesh.castShadow = true;
+      doorMesh.receiveShadow = true;
+      doorGroup.add(doorMesh);
+
+      // Brass Lever Handles & Escutcheon Plates on Both Sides!
+      [-0.045, 0.045].forEach(sideX => {
+        // Escutcheon plate
+        const plate = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.22, 0.06), brassMat);
+        plate.position.set(sideX, 1.15, leafOffsetZ + (hingeSide === 1 ? 0.44 : -0.44));
+        doorGroup.add(plate);
+
+        // Brass lever handle
+        const lever = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.10, 12), brassMat);
+        lever.rotation.x = Math.PI / 2;
+        lever.position.set(sideX > 0 ? sideX + 0.02 : sideX - 0.02, 1.18, leafOffsetZ + (hingeSide === 1 ? 0.44 : -0.44));
+        doorGroup.add(lever);
+      });
+
+      doorAssembly.add(doorGroup);
+      scene.add(doorAssembly);
+
+      // Locked Door Solid Collider (blocks passing through when locked)
+      let doorCollider = null;
+      if (isLocked) {
+        doorCollider = {
+          minX: x - 0.15, maxX: x + 0.15,
+          minZ: zc - 0.60, maxZ: zc + 0.60,
+          minY: y, maxY: y + 2.50,
+          disabled: false,
+          name: `locked_collider_${name}`
+        };
+        colliders.push(doorCollider);
+      }
+
+      const doorObj = {
+        name,
+        roomName,
+        group: doorGroup,
+        mesh: doorMesh,
+        collider: doorCollider,
+        isOpen: false,
+        isLocked,
+        lockedReason,
+        targetAngle: 0,
+        currentAngle: 0,
+        hingeSide
+      };
+      doors.push(doorObj);
+
+      registerInteractive(doorMesh, name, isLocked ? `[E] LOCKED: ${lockedReason || 'DOOR SECURE'}` : `[E] OPEN ${roomName.replace(/_/g, ' ')}`);
+      doorMesh.doorData = doorObj;
+      return doorObj;
+    }
+
+    // =========================================================================
+    // BUILD 10-ROOM TWO-FLOOR ARCHITECTURE
+    // =========================================================================
+
+    // -------------------------------------------------------------------------
+    // FLOOR 1 (Y = 3.60 to 6.80, Player standing eye height = 5.05)
+    // -------------------------------------------------------------------------
+
+    // 1. Central Hallway (1F)
+    const hallFloor1F = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 24.0), woodFloorMat);
+    hallFloor1F.rotation.x = -Math.PI / 2;
+    hallFloor1F.position.set(0, 3.6, 0);
+    scene.add(hallFloor1F);
+
+    const hallCeil1F = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 24.0), ceilingMat);
+    hallCeil1F.rotation.x = Math.PI / 2;
+    hallCeil1F.position.set(0, 6.8, 0);
+    scene.add(hallCeil1F);
+
+    // Ceiling Dark Timber Cross-Beams along Hallway
+    [-9, -6, -3, 0, 3, 6, 9].forEach(bz => {
+      const beam = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.14, 0.18), wainscotWoodMat);
+      beam.position.set(0, 6.73, bz);
+      scene.add(beam);
+    });
+
+    // Hallway South Wall (Z = 12.0)
+    buildWall(0, 5.2, 12.0, 3.2, 3.2, 0.2, wallpaperMat, 'hall_south_1F');
+
+    // Ornate Framed Landscape Oil Painting on South Hallway Wall
+    const hallPainting = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.2, 0.05), wainscotWoodMat);
+    hallPainting.position.set(0, 5.3, 11.88);
+    scene.add(hallPainting);
+
+    // Hallway Glowing Brass Wall Sconces (Reference Image 2)
+    [-9.5, -2.5, 5.0, 11.0].forEach(sz => {
+      createWallSconce(-1.58, 5.4, sz, Math.PI / 2); // West wall facing East
+      createWallSconce(1.58, 5.4, sz, -Math.PI / 2); // East wall facing West
+    });
+
+    // 2. Decoy Exit at North End of 1F Hallway (Z = -12.0)
+    const decoySignCanvas = document.createElement('canvas');
+    decoySignCanvas.width = 256; decoySignCanvas.height = 64;
+    const dsCtx = decoySignCanvas.getContext('2d');
+    dsCtx.fillStyle = '#064e3b'; dsCtx.fillRect(0, 0, 256, 64);
+    dsCtx.fillStyle = '#22c55e'; dsCtx.font = 'bold 20px monospace';
+    dsCtx.textAlign = 'center'; dsCtx.fillText('EXIT -> HIGHWAY', 128, 40);
+    const decoySignTex = new THREE.CanvasTexture(decoySignCanvas);
+
+    const decoySign = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 0.4, 0.08),
+      new THREE.MeshStandardMaterial({ map: decoySignTex, emissive: 0x22c55e, emissiveIntensity: 0.8 })
+    );
+    decoySign.position.set(0, 6.2, -11.9);
+    scene.add(decoySign);
+
+    // Roll-up Shutter Mesh
+    const shutterMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(2.4, 2.5, 0.1),
+      new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.4 })
+    );
+    shutterMesh.position.set(0, 4.85, -12.0);
+    scene.add(shutterMesh);
+    registerInteractive(shutterMesh, "DECOY_EXIT_SHUTTER", "[E] OPEN HIGHWAY EXIT SHUTTER");
+    let decoyShutterOpen = false;
+
+    // Storm Balcony Beyond Decoy Shutter (Z = -12 to -15)
+    const balconyFloor = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 3.0), woodFloorMat);
+    balconyFloor.rotation.x = -Math.PI / 2;
+    balconyFloor.position.set(0, 3.6, -13.5);
+    scene.add(balconyFloor);
+
+    // Balcony Railing (Blocks falling into abyss)
+    buildWall(0, 4.2, -15.0, 3.2, 1.2, 0.1, brassMat, 'balcony_rail');
+    buildWall(-1.6, 4.2, -13.5, 0.1, 1.2, 3.0, brassMat, 'balcony_rail_L');
+    buildWall(1.6, 4.2, -13.5, 0.1, 1.2, 3.0, brassMat, 'balcony_rail_R');
+
+    // 3. Lounge (Start Room - 1F West, Z: 6 to 12, X: -7 to -1.6)
+    const loungeFloor = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), woodFloorMat);
+    loungeFloor.rotation.x = -Math.PI / 2;
+    loungeFloor.position.set(-4.3, 3.6, 9.0);
+    scene.add(loungeFloor);
+
+    const loungeCeil = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), ceilingMat);
+    loungeCeil.rotation.x = Math.PI / 2;
+    loungeCeil.position.set(-4.3, 6.8, 9.0);
+    scene.add(loungeCeil);
+
+    buildWall(-7.0, 5.2, 9.0, 0.2, 3.2, 6.0, wallpaperMat, 'lounge_west');
+    buildWall(-4.3, 5.2, 12.0, 5.4, 3.2, 0.2, wallpaperMat, 'lounge_south');
+    buildWall(-4.3, 5.2, 6.0, 5.4, 3.2, 0.2, wallpaperMat, 'lounge_north');
+
+    // Precision Dividing Wall & Doorway between Lounge and Hallway at X = -1.6 (Opening at Z = 9.0)
+    buildWall(-1.6, 5.2, 7.20, 0.2, 3.2, 2.40, wallpaperMat); // Wall from Z = 6.0 to 8.4
+    buildWall(-1.6, 6.45, 9.00, 0.2, 0.7, 1.20, wallpaperMat); // Lintel from Z = 8.4 to 9.6
+    buildWall(-1.6, 5.2, 10.80, 0.2, 3.2, 2.40, wallpaperMat); // Wall from Z = 9.6 to 12.0
+
+    const loungeDoor = createHingedDoor({
+      name: "DOOR_LOUNGE",
+      roomName: "LOUNGE DOOR",
+      x: -1.6, y: 3.6, zc: 9.0,
+      hingeSide: 1,
+      isLocked: false
+    });
+
+    // Fireplace in Lounge
+    const fireplace = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.4, 1.8), new THREE.MeshStandardMaterial({ color: 0x451a03 }));
+    fireplace.position.set(-6.7, 4.3, 9.0);
+    scene.add(fireplace);
+    const fireplaceLight = new THREE.PointLight(0xf97316, 2.2, 7.0, 1.8);
+    fireplaceLight.position.set(-6.2, 4.3, 9.0);
+    scene.add(fireplaceLight);
+
+    // Gothic Window on West Lounge wall with Moonlight shaft
+    createMoonlightWindow(-6.98, 5.2, 7.2, Math.PI / 2);
+
+    // Coffee table & Smartphone on Nightstand Table (South side at Z = 9.8)
+    const coffeeTable = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.55, 0.8), wainscotWoodMat);
+    coffeeTable.position.set(-4.2, 3.875, 9.8);
+    scene.add(coffeeTable);
+    addCollider(-4.65, -3.75, 9.35, 10.25, 3.6, 4.2, 'coffee_table');
+
+    // Bedside Table Lamp
+    const loungeLamp = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.18, 0.24, 16),
+      new THREE.MeshStandardMaterial({ color: 0xffedd5, emissive: 0xffb74d, emissiveIntensity: 1.8 })
+    );
+    loungeLamp.position.set(-3.9, 4.3, 9.8);
+    scene.add(loungeLamp);
+    const loungeLampLight = new THREE.PointLight(0xffb74d, 2.4, 5.5, 1.8);
+    loungeLampLight.position.set(-3.9, 4.3, 9.8);
+    scene.add(loungeLampLight);
+
+    // Glowing Animated Smartphone
+    const phoneMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.16, 0.02, 0.28),
+      new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x38bdf8, emissiveIntensity: 1.8 })
+    );
+    phoneMesh.position.set(-4.2, 4.16, 9.8);
+    scene.add(phoneMesh);
+    registerInteractive(phoneMesh, "SMARTPHONE_DEVICE", "[E] ANSWER RINGING SMARTPHONE");
+
+    // Pulsing 3D Floating Beacon above phone
+    const phoneBeacon = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.08),
+      new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.9 })
+    );
+    phoneBeacon.position.set(-4.2, 4.5, 9.8);
+    scene.add(phoneBeacon);
+
+    // 4. Dr. Voss's Study (1F West, Z: -2 to 4, X: -7 to -1.6)
+    const studyFloor = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), woodFloorMat);
+    studyFloor.rotation.x = -Math.PI / 2;
+    studyFloor.position.set(-4.3, 3.6, 1.0);
+    scene.add(studyFloor);
+
+    const studyCeil = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), ceilingMat);
+    studyCeil.rotation.x = Math.PI / 2;
+    studyCeil.position.set(-4.3, 6.8, 1.0);
+    scene.add(studyCeil);
+
+    buildWall(-7.0, 5.2, 1.0, 0.2, 3.2, 6.0, wallpaperMat, 'study_west');
+    buildWall(-4.3, 5.2, 4.0, 5.4, 3.2, 0.2, wallpaperMat, 'study_south');
+    buildWall(-4.3, 5.2, -2.0, 5.4, 3.2, 0.2, wallpaperMat, 'study_north');
+
+    // Precision Dividing Wall & Doorway between Study and Hallway at X = -1.6 (Opening at Z = 1.0)
+    buildWall(-1.6, 5.2, -0.80, 0.2, 3.2, 2.40, wallpaperMat); // Wall from Z = -2.0 to 0.4
+    buildWall(-1.6, 6.45, 1.00, 0.2, 0.7, 1.20, wallpaperMat); // Lintel from Z = 0.4 to 1.6
+    buildWall(-1.6, 5.2, 2.80, 0.2, 3.2, 2.40, wallpaperMat);  // Wall from Z = 1.6 to 4.0
+
+    const studyDoor = createHingedDoor({
+      name: "DOOR_DR_VOSS_STUDY",
+      roomName: "DR. VOSS'S STUDY",
+      x: -1.6, y: 3.6, zc: 1.0,
+      hingeSide: 1,
+      isLocked: false
+    });
+
+    // Executive Oak Desk
+    const studyDesk = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.75, 2.4), wainscotWoodMat);
+    studyDesk.position.set(-5.6, 3.975, 1.0);
+    scene.add(studyDesk);
+    addCollider(-6.4, -4.8, -0.2, 2.2, 3.6, 4.8, 'study_desk');
+
+    // Green Banker Lamp (Study Landmark)
+    const bankerLamp = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.14, 0.14, 0.22, 16),
+      new THREE.MeshStandardMaterial({ color: 0x15803d, emissive: 0x22c55e, emissiveIntensity: 1.4 })
+    );
+    bankerLamp.position.set(-5.6, 4.5, 1.0);
+    scene.add(bankerLamp);
+    const bankerLight = new THREE.PointLight(0x22c55e, 2.0, 5.5, 1.8);
+    bankerLight.position.set(-5.6, 4.6, 1.0);
+    scene.add(bankerLight);
+
+    // Dr. Adrian Voss Portrait on West wall
+    const portrait = new THREE.Mesh(
+      new THREE.BoxGeometry(0.08, 1.6, 1.2),
+      new THREE.MeshStandardMaterial({ map: createPortraitTexture() })
+    );
+    portrait.position.set(-6.94, 5.3, 1.0);
+    scene.add(portrait);
+    registerInteractive(portrait, "VOSS_PORTRAIT", "[E] INSPECT NOBEL LAUREATE PORTRAIT");
+
+    // Nobel Medal Case on Desk
+    const nobelMedal = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.02, 32), brassMat);
+    nobelMedal.position.set(-5.2, 4.37, 1.4);
+    scene.add(nobelMedal);
+    registerInteractive(nobelMedal, "NOBEL_PRIZE_1994", "[E] INSPECT 1994 NOBEL LAUREATE CITATION");
+
+    // Handwritten Research Diary
+    const diary = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.04, 0.32), new THREE.MeshStandardMaterial({ color: 0x7c2d12 }));
+    diary.position.set(-5.2, 4.38, 0.6);
+    scene.add(diary);
+    registerInteractive(diary, "VOSS_DIARY", "[E] READ RESEARCH LOG (OCTOBER 2026)");
+
+    // Brass Motto Clock on Mantle
+    const mottoClock = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.15), brassMat);
+    mottoClock.position.set(-5.6, 5.2, -1.9);
+    scene.add(mottoClock);
+    registerInteractive(mottoClock, "DESK_ENGRAVED_MOTTO", "[E] READ ENGRAVED MOTTO CLOCK");
+
+    // 5. Bedroom (1F East, Z: 6 to 12, X: 1.6 to 7.0 - Reference Image 1)
+    const bedFloor1F = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), woodFloorMat);
+    bedFloor1F.rotation.x = -Math.PI / 2;
+    bedFloor1F.position.set(4.3, 3.6, 9.0);
+    scene.add(bedFloor1F);
+
+    const bedCeil1F = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), ceilingMat);
+    bedCeil1F.rotation.x = Math.PI / 2;
+    bedCeil1F.position.set(4.3, 6.8, 9.0);
+    scene.add(bedCeil1F);
+
+    buildWall(7.0, 5.2, 9.0, 0.2, 3.2, 6.0, wallpaperMat, 'bedroom_east');
+    buildWall(4.3, 5.2, 12.0, 5.4, 3.2, 0.2, wallpaperMat, 'bedroom_south');
+    buildWall(4.3, 5.2, 6.0, 5.4, 3.2, 0.2, wallpaperMat, 'bedroom_north');
+
+    // Precision Dividing Wall & Doorway between Bedroom and Hallway at X = 1.6 (Opening at Z = 9.0)
+    buildWall(1.6, 5.2, 7.20, 0.2, 3.2, 2.40, wallpaperMat); // Wall from Z = 6.0 to 8.4
+    buildWall(1.6, 6.45, 9.00, 0.2, 0.7, 1.20, wallpaperMat); // Lintel from Z = 8.4 to 9.6
+    buildWall(1.6, 5.2, 10.80, 0.2, 3.2, 2.40, wallpaperMat); // Wall from Z = 9.6 to 12.0
+
+    const bedroomDoor = createHingedDoor({
+      name: "DOOR_BEDROOM",
+      roomName: "BEDROOM DOOR",
+      x: 1.6, y: 3.6, zc: 9.0,
+      hingeSide: 1,
+      isLocked: false
+    });
+
+    // Master Bed with Crumpled Blanket & Pillows (Reference Image 1)
+    const bedFrame = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.6, 2.4), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 }));
+    bedFrame.position.set(5.5, 3.9, 9.0);
+    scene.add(bedFrame);
+    addCollider(4.4, 6.6, 7.8, 10.2, 3.6, 4.8, 'bed_frame');
+
+    // Vintage Mahogany Wardrobe Closet (Reference Image 1)
+    const wardrobe = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.4, 1.8), wainscotWoodMat);
+    wardrobe.position.set(6.5, 4.8, 6.6);
+    scene.add(wardrobe);
+    addCollider(6.1, 6.9, 5.7, 7.5, 3.6, 6.0, 'wardrobe');
+
+    // Retro CRT Television on Wooden Shelf (Reference Image 1)
+    const tvShelf = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.8, 1.2), wainscotWoodMat);
+    tvShelf.position.set(6.6, 4.0, 11.2);
+    scene.add(tvShelf);
+    const crtTv = new THREE.Mesh(
+      new THREE.BoxGeometry(0.45, 0.45, 0.55),
+      new THREE.MeshStandardMaterial({ color: 0x0f172a, emissive: 0x0284c7, emissiveIntensity: 0.6 })
+    );
+    crtTv.position.set(6.5, 4.65, 11.2);
+    scene.add(crtTv);
+
+    // Gothic Multi-Pane Window with Volumetric Moonlight Beam (Reference Image 1)
+    createMoonlightWindow(6.98, 5.2, 9.0, -Math.PI / 2);
+    const bedMoonLight = new THREE.PointLight(0x38bdf8, 2.4, 6.0, 1.8);
+    bedMoonLight.position.set(6.2, 5.4, 9.0);
+    scene.add(bedMoonLight);
+
+    // Framed Art on Wall
+    const vanGoghPainting = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 0.9, 0.05),
+      new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1, emissiveIntensity: 0.4 })
+    );
+    vanGoghPainting.position.set(4.3, 5.2, 11.9);
+    scene.add(vanGoghPainting);
+    registerInteractive(vanGoghPainting, "VAN_GOGH_PAINTING", "[E] INSPECT OIL PAINTING: SLEEPLESS NIGHTS");
+
+    // Prescription Medicine Bottle on Bedside Nightstand
+    const rxBottle = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.04, 0.04, 0.12, 16),
+      new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xd97706, emissiveIntensity: 0.8 })
+    );
+    rxBottle.position.set(4.0, 4.3, 11.2);
+    scene.add(rxBottle);
+    registerInteractive(rxBottle, "PRESCRIPTION_BOTTLE", "[E] INSPECT CLINICAL PRESCRIPTION BOTTLE");
+
+    // 6. Library (1F East, Z: -2 to 4, X: 1.6 to 7.0 - Holds Stairwell Key!)
+    const libFloor = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), woodFloorMat);
+    libFloor.rotation.x = -Math.PI / 2;
+    libFloor.position.set(4.3, 3.6, 1.0);
+    scene.add(libFloor);
+
+    const libCeil = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), ceilingMat);
+    libCeil.rotation.x = Math.PI / 2;
+    libCeil.position.set(4.3, 6.8, 1.0);
+    scene.add(libCeil);
+
+    buildWall(7.0, 5.2, 1.0, 0.2, 3.2, 6.0, wallpaperMat, 'lib_east');
+    buildWall(4.3, 5.2, 4.0, 5.4, 3.2, 0.2, wallpaperMat, 'lib_south');
+    buildWall(4.3, 5.2, -2.0, 5.4, 3.2, 0.2, wallpaperMat, 'lib_north');
+
+    // Precision Dividing Wall & Doorway between Library and Hallway at X = 1.6 (Opening at Z = 1.0)
+    buildWall(1.6, 5.2, -0.80, 0.2, 3.2, 2.40, wallpaperMat); // Wall from Z = -2.0 to 0.4
+    buildWall(1.6, 6.45, 1.00, 0.2, 0.7, 1.20, wallpaperMat); // Lintel from Z = 0.4 to 1.6
+    buildWall(1.6, 5.2, 2.80, 0.2, 3.2, 2.40, wallpaperMat);  // Wall from Z = 1.6 to 4.0
+
+    const libDoor = createHingedDoor({
+      name: "DOOR_LIBRARY",
+      roomName: "LIBRARY DOOR",
+      x: 1.6, y: 3.6, zc: 1.0,
+      hingeSide: 1,
+      isLocked: false
+    });
+
+    // Tall Library Bookshelves along East wall
+    const libShelf = new THREE.Mesh(new THREE.BoxGeometry(0.5, 3.0, 4.8), wainscotWoodMat);
+    libShelf.position.set(6.75, 5.1, 1.0);
+    scene.add(libShelf);
+    addCollider(6.5, 7.0, -1.4, 3.4, 3.6, 6.8, 'lib_shelf');
+
+    // Library Reading Table
+    const libTable = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.75, 1.0), wainscotWoodMat);
+    libTable.position.set(4.5, 3.975, 1.0);
+    scene.add(libTable);
+    addCollider(3.7, 5.3, 0.5, 1.5, 3.6, 4.8, 'lib_table');
+
+    // Deep Violet/Indigo Reading Lamp (Library Landmark)
+    const libLamp = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.16, 0.22, 16),
+      new THREE.MeshStandardMaterial({ color: 0x818cf8, emissive: 0x6366f1, emissiveIntensity: 1.6 })
+    );
+    libLamp.position.set(4.5, 4.5, 0.8);
+    scene.add(libLamp);
+    const libLampLight = new THREE.PointLight(0x818cf8, 2.2, 6.0, 1.8);
+    libLampLight.position.set(4.5, 4.6, 0.8);
+    scene.add(libLampLight);
+
+    // Visible Glowing Beacon & Point Light on Library Key
+    const brassKeyMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.25, 0.04, 0.08),
+      new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.95, roughness: 0.15, emissive: 0xf59e0b, emissiveIntensity: 1.2 })
+    );
+    brassKeyMesh.position.set(4.5, 4.38, 1.2);
+    scene.add(brassKeyMesh);
+    registerInteractive(brassKeyMesh, "BRASS_STAIRWELL_KEY", "[E] TAKE BRASS STAIRWELL KEY");
+
+    const keyGlowLight = new THREE.PointLight(0xf59e0b, 1.6, 3.5, 2.0);
+    keyGlowLight.position.set(4.5, 4.5, 1.2);
+    scene.add(keyGlowLight);
+
+    const keyBeacon = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.10),
+      new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true, transparent: true, opacity: 0.9 })
+    );
+    keyBeacon.position.set(4.5, 4.65, 1.2);
+    scene.add(keyBeacon);
+
+    // Vinyl Record Album
+    const vinylAlbum = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.02, 0.32), new THREE.MeshStandardMaterial({ color: 0x09090b }));
+    vinylAlbum.position.set(3.9, 4.37, 1.0);
+    scene.add(vinylAlbum);
+    registerInteractive(vinylAlbum, "VINYL_ALBUM", "[E] INSPECT 1994 CLASSICAL VINYL SLEEVE");
+
+    // Memo Plaque on Library Desk
+    const memoPlaque = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.02), brassMat);
+    memoPlaque.position.set(5.1, 4.45, 1.0);
+    scene.add(memoPlaque);
+    registerInteractive(memoPlaque, "FACILITY_MEMO_PLAQUE", "[E] READ FOUNDER'S MEMO (BUILDING KEYS)");
+
+    // 7. Stairwell Enclosure (1F West, Z: -8 to -4, X: -4.6 to -1.6)
+    // Precision Dividing Wall & Locked Door between Hallway and Stairwell at X = -1.6 (Opening at Z = -6.0)
+    buildWall(-1.6, 5.2, -7.30, 0.2, 3.2, 1.40, wallpaperMat); // Wall from Z = -8.0 to -6.6
+    buildWall(-1.6, 6.45, -6.00, 0.2, 0.7, 1.20, wallpaperMat); // Lintel from Z = -6.6 to -5.4
+    buildWall(-1.6, 5.2, -4.70, 0.2, 3.2, 1.40, wallpaperMat); // Wall from Z = -5.4 to -4.0
+
+    const stairDoor = createHingedDoor({
+      name: "DOOR_STAIRWELL",
+      roomName: "STAIRWELL ACCESS",
+      x: -1.6, y: 3.6, zc: -6.0,
+      hingeSide: 1,
+      isLocked: true,
+      lockedReason: "STAIRWELL LOCKED • REQUIRES BRASS KEY"
+    });
+
+    buildWall(-4.6, 5.2, -6.0, 0.2, 3.2, 4.0, wallpaperMat, 'stair_west_1F');
+    buildWall(-3.1, 5.2, -8.0, 3.0, 3.2, 0.2, wallpaperMat, 'stair_north_1F');
+
+    // 16 Smooth Wooden Stair Steps descending from 1F (Y = 3.6) to GF (Y = 0.0)
+    const stairSteps = [];
+    for (let s = 0; s < 16; s++) {
+      const stepT = s / 15.0;
+      const stepZ = -7.4 + stepT * 3.8;
+      const stepY = 3.6 - stepT * 3.6;
+      const stepMesh = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.24, 0.35), wainscotWoodMat);
+      stepMesh.position.set(-3.1, stepY, stepZ);
+      stepMesh.receiveShadow = true;
+      scene.add(stepMesh);
+      stairSteps.push(stepMesh);
+    }
+
+    // -------------------------------------------------------------------------
+    // GROUND FLOOR (Y = 0 to 3.20, Player standing eye height = 1.55)
+    // -------------------------------------------------------------------------
+
+    // 8. Ground Floor Landing (Bottom of stairs, Z: -4 to 0, X: -4.6 to -1.6)
+    const landingFloor = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 4.0), woodFloorMat);
+    landingFloor.rotation.x = -Math.PI / 2;
+    landingFloor.position.set(-3.1, 0, -2.0);
+    scene.add(landingFloor);
+
+    buildWall(-4.6, 1.6, -2.0, 0.2, 3.2, 4.0, wallpaperMat, 'landing_west_GF');
+    buildWall(-3.1, 1.6, -4.0, 3.0, 3.2, 0.2, wallpaperMat, 'landing_north_GF');
+    buildWall(-3.1, 1.6, 0.0, 3.0, 3.2, 0.2, wallpaperMat, 'landing_south_GF');
+
+    // Wall Floor Plan Plaque on Landing wall
+    const floorPlanPlaque = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, 1.2, 1.2),
+      new THREE.MeshStandardMaterial({ map: createFloorPlanTexture(), roughness: 0.3 })
+    );
+    floorPlanPlaque.position.set(-4.54, 1.6, -2.0);
+    scene.add(floorPlanPlaque);
+    registerInteractive(floorPlanPlaque, "GROUND_FLOOR_PLAN", "[E] STUDY GROUND LEVEL BLUEPRINT (EGRESS LOOP)");
+
+    // 9. Ground Floor Utility Corridor (Z: -8 to 4, X: -1.6 to 1.6)
+    const utilFloorGF = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 12.0), tileFloorMat);
+    utilFloorGF.rotation.x = -Math.PI / 2;
+    utilFloorGF.position.set(0, 0, -2.0);
+    scene.add(utilFloorGF);
+
+    const utilCeilGF = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 12.0), ceilingMat);
+    utilCeilGF.rotation.x = Math.PI / 2;
+    utilCeilGF.position.set(0, 3.2, -2.0);
+    scene.add(utilCeilGF);
+
+    buildWall(0, 1.6, -8.0, 3.2, 3.2, 0.2, wallpaperMat, 'util_north_GF');
+
+    // Fluorescent Industrial Lights in Utility Corridor
+    [-6, -2, 2].forEach(fz => {
+      const flLight = new THREE.PointLight(0xa5f3fc, 1.2, 5.5, 1.8);
+      flLight.position.set(0, 2.9, fz);
+      scene.add(flLight);
+    });
+
+    // 10. Storeroom / AI Supercomputer Lab (GF West, Z: -9 to -3, X: -7.0 to -1.6)
+    const labFloor = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), tileFloorMat);
+    labFloor.rotation.x = -Math.PI / 2;
+    labFloor.position.set(-4.3, 0, -6.0);
+    scene.add(labFloor);
+
+    const labCeil = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 6.0), ceilingMat);
+    labCeil.rotation.x = Math.PI / 2;
+    labCeil.position.set(-4.3, 3.2, -6.0);
+    scene.add(labCeil);
+
+    buildWall(-7.0, 1.6, -6.0, 0.2, 3.2, 6.0, wallpaperMat, 'lab_west');
+    buildWall(-4.3, 1.6, -9.0, 5.4, 3.2, 0.2, wallpaperMat, 'lab_north');
+    buildWall(-4.3, 1.6, -3.0, 5.4, 3.2, 0.2, wallpaperMat, 'lab_south');
+
+    // Precision Dividing Wall & Doorway between Lab and Utility Corridor at X = -1.6 (Opening at Z = -6.0)
+    buildWall(-1.6, 1.6, -7.80, 0.2, 3.2, 2.40, wallpaperMat); // Wall from Z = -9.0 to -6.6
+    buildWall(-1.6, 2.85, -6.00, 0.2, 0.7, 1.20, wallpaperMat); // Lintel from Z = -6.6 to -5.4
+    buildWall(-1.6, 1.6, -4.20, 0.2, 3.2, 2.40, wallpaperMat);  // Wall from Z = -5.4 to -3.0
+
+    const storeroomDoor = createHingedDoor({
+      name: "DOOR_STOREROOM_AI_LAB",
+      roomName: "FACILITY DEEP ARCHIVE",
+      x: -1.6, y: 0, zc: -6.0,
+      hingeSide: 1,
+      isLocked: true,
+      lockedReason: "ACCESS DENIED: ARCHIVE KEYPAD SEALED"
+    });
+
+    // Storeroom Keypad on wall at Z = -5.2
+    const storeroomKeypadMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.12, 0.35, 0.22),
+      new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 })
+    );
+    storeroomKeypadMesh.position.set(-1.52, 1.4, -5.2);
+    scene.add(storeroomKeypadMesh);
+    registerInteractive(storeroomKeypadMesh, "STOREROOM_KEYPAD", "[E] ENTER ARCHIVE ACCESS CODE (KEYPAD)");
+
+    // Sticky Note on wall beside Keypad with code ADAM
+    const stickyCanvas = document.createElement('canvas');
+    stickyCanvas.width = 128; stickyCanvas.height = 128;
+    const sctx = stickyCanvas.getContext('2d');
+    sctx.fillStyle = '#fef08a'; sctx.fillRect(0, 0, 128, 128);
+    sctx.fillStyle = '#1e293b'; sctx.font = 'bold 15px monospace';
+    sctx.fillText('CODE: ADAM', 15, 68);
+    const stickyTex = new THREE.CanvasTexture(stickyCanvas);
+
+    const stickyNoteMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.02, 0.16, 0.16),
+      new THREE.MeshStandardMaterial({ map: stickyTex, roughness: 0.9 })
+    );
+    stickyNoteMesh.position.set(-1.52, 1.4, -4.72);
+    scene.add(stickyNoteMesh);
+    registerInteractive(stickyNoteMesh, "KEYPAD_STICKY_NOTE", "[E] READ STICKY NOTE (PASSCODE MEMO)");
+
+    // Supercomputer Server Racks inside Lab
+    const serverRack = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 2.6, 3.6),
+      new THREE.MeshStandardMaterial({ color: 0x090d16, metalness: 0.85, roughness: 0.25 })
+    );
+    serverRack.position.set(-6.0, 1.3, -6.0);
+    scene.add(serverRack);
+    addCollider(-6.6, -5.4, -7.8, -4.2, 0, 3.2, 'server_rack');
+    registerInteractive(serverRack, "SERVER_MAINFRAME_RACK", "[E] SABOTAGE AI CORE LOGIC (REQUIRES HIGHLAND FLUID)");
+
+    const serverLight = new THREE.PointLight(0x38bdf8, 1.8, 5.0, 2.0);
+    serverLight.position.set(-5.0, 1.8, -6.0);
+    scene.add(serverLight);
+
+    // Dynamic Arson Flame Lights & Particles
+    const fireLight = new THREE.PointLight(0xf97316, 0, 10.0, 1.5);
+    fireLight.position.set(-5.5, 1.6, -6.0);
+    scene.add(fireLight);
+
+    const fireParticles = [];
+    for (let f = 0; f < 30; f++) {
+      const fp = new THREE.Mesh(
+        new THREE.SphereGeometry(0.08, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.85 })
+      );
+      fp.position.set(-6.0 + (Math.random() - 0.5) * 1.0, 0.4 + Math.random() * 1.8, -6.0 + (Math.random() - 0.5) * 2.8);
+      fp.baseY = fp.position.y;
+      scene.add(fp);
+      fireParticles.push(fp);
+    }
+
+    // Lab Desk & CRT Workstation
+    const labDesk = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.75, 1.8), wainscotWoodMat);
+    labDesk.position.set(-3.6, 0.375, -6.0);
+    scene.add(labDesk);
+    addCollider(-4.3, -2.9, -6.9, -5.1, 0, 1.8, 'lab_desk');
+
+    const crtTerminal = new THREE.Mesh(
+      new THREE.BoxGeometry(0.5, 0.45, 0.55),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, emissive: 0x059669, emissiveIntensity: 0.9 })
+    );
+    crtTerminal.position.set(-3.6, 0.975, -6.0);
+    scene.add(crtTerminal);
+    registerInteractive(crtTerminal, "SUPERCOMPUTER_CRT", "[E] ACCESS OVERRIDE TERMINAL (PASSKEY)");
+
+    // Technical Passkey Printout on Lab Desk
+    const labPrintoutCanvas = document.createElement('canvas');
+    labPrintoutCanvas.width = 256; labPrintoutCanvas.height = 256;
+    const pctx = labPrintoutCanvas.getContext('2d');
+    pctx.fillStyle = '#f8fafc'; pctx.fillRect(0, 0, 256, 256);
+    pctx.fillStyle = '#0f172a'; pctx.font = 'bold 16px monospace';
+    pctx.fillText('FACILITY SECURITY CLEARANCE', 12, 35);
+    pctx.fillText('PRIMARY BLAST DOOR PASSKEY:', 12, 75);
+    pctx.fillStyle = '#b91c1c'; pctx.font = 'bold 18px monospace';
+    pctx.fillText('VOSS-1994-OMEGA', 12, 115);
+    pctx.fillStyle = '#475569'; pctx.font = '12px monospace';
+    pctx.fillText('CONFIDENTIAL SYSTEM ARCHITECT', 12, 160);
+    const labPrintoutTex = new THREE.CanvasTexture(labPrintoutCanvas);
+
+    const labPrintoutMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.24, 0.01, 0.30),
+      new THREE.MeshStandardMaterial({ map: labPrintoutTex, roughness: 0.7 })
+    );
+    labPrintoutMesh.position.set(-3.1, 1.12, -6.0);
+    scene.add(labPrintoutMesh);
+    registerInteractive(labPrintoutMesh, "LAB_PRINTOUT", "[E] READ OVERRIDE PASSKEY SHEET");
+
+    // Root Neural USB Pendrive on desk
+    const usbDrive = new THREE.Mesh(
+      new THREE.BoxGeometry(0.12, 0.03, 0.06),
+      new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.9, roughness: 0.15, emissive: 0x0284c7, emissiveIntensity: 1.2 })
+    );
+    usbDrive.position.set(-3.6, 0.78, -5.5);
+    scene.add(usbDrive);
+    registerInteractive(usbDrive, "NEURAL_USB_DRIVE", "[E] RETRIEVE ROOT SYSTEM PENDRIVE");
+
+    // 11. Kitchen (GF East, Z: -4 to 4, X: 1.6 to 7.0 - Loop Segment 2)
+    const kitchenFloor = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 8.0), tileFloorMat);
+    kitchenFloor.rotation.x = -Math.PI / 2;
+    kitchenFloor.position.set(4.3, 0, 0);
+    scene.add(kitchenFloor);
+
+    const kitchenCeil = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 8.0), ceilingMat);
+    kitchenCeil.rotation.x = Math.PI / 2;
+    kitchenCeil.position.set(4.3, 3.2, 0);
+    scene.add(kitchenCeil);
+
+    buildWall(7.0, 1.6, 0, 0.2, 3.2, 8.0, wallpaperMat, 'kitchen_east');
+    buildWall(4.3, 1.6, -4.0, 5.4, 3.2, 0.2, wallpaperMat, 'kitchen_north');
+
+    // Precision Dividing Wall & Doorway between Kitchen and Utility Corridor at X = 1.6 (Opening at Z = 0.0)
+    buildWall(1.6, 1.6, -2.30, 0.2, 3.2, 3.40, wallpaperMat); // Wall from Z = -4.0 to -0.6
+    buildWall(1.6, 2.85, 0.00, 0.2, 0.7, 1.20, wallpaperMat);  // Lintel from Z = -0.6 to 0.6
+    buildWall(1.6, 1.6, 2.30, 0.2, 3.2, 3.40, wallpaperMat);   // Wall from Z = 0.6 to 4.0
+
+    const kitchenDoor = createHingedDoor({
+      name: "DOOR_KITCHEN",
+      roomName: "KITCHEN ACCESS",
+      x: 1.6, y: 0, zc: 0.0,
+      hingeSide: 1,
+      isLocked: false
+    });
+
+    const kitchenLight = new THREE.PointLight(0xfb923c, 1.8, 6.5, 1.8);
+    kitchenLight.position.set(4.3, 2.7, 0);
+    scene.add(kitchenLight);
+
+    // Kitchen Prep Island Table
+    const prepTable = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.85, 3.8), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7, roughness: 0.3 }));
+    prepTable.position.set(4.3, 0.425, 0);
+    scene.add(prepTable);
+    addCollider(3.6, 5.0, -1.9, 1.9, 0, 1.8, 'prep_table');
+
+    // Open Archway connecting Kitchen to Dining Room at Z = 4.0 (Opening X: 3.1 to 5.5)
+    buildWall(2.35, 1.6, 4.0, 1.50, 3.2, 0.2, wallpaperMat);
+    buildWall(6.25, 1.6, 4.0, 1.50, 3.2, 0.2, wallpaperMat);
+    buildWall(4.30, 2.85, 4.0, 2.40, 0.7, 0.2, wallpaperMat); // Archway Header Lintel
+
+    // 12. Dining Room (GF East, Z: 4 to 12, X: 1.6 to 7.0 - Loop Segment 3)
+    const diningFloor = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 8.0), woodFloorMat);
+    diningFloor.rotation.x = -Math.PI / 2;
+    diningFloor.position.set(4.3, 0, 8.0);
+    scene.add(diningFloor);
+
+    const diningCeil = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 8.0), ceilingMat);
+    diningCeil.rotation.x = Math.PI / 2;
+    diningCeil.position.set(4.3, 3.2, 8.0);
+    scene.add(diningCeil);
+
+    buildWall(7.0, 1.6, 8.0, 0.2, 3.2, 8.0, wallpaperMat, 'dining_east');
+    buildWall(4.3, 1.6, 12.0, 5.4, 3.2, 0.2, wallpaperMat, 'dining_south');
+
+    // Precision Dividing Wall & Doorway between Dining and Foyer at X = 1.6 (Opening at Z = 8.0)
+    buildWall(1.6, 1.6, 5.70, 0.2, 3.2, 3.40, wallpaperMat);  // Wall from Z = 4.0 to 7.4
+    buildWall(1.6, 2.85, 8.00, 0.2, 0.7, 1.20, wallpaperMat);  // Lintel from Z = 7.4 to 8.6
+    buildWall(1.6, 1.6, 10.30, 0.2, 3.2, 3.40, wallpaperMat); // Wall from Z = 8.6 to 12.0
+
+    const diningDoor = createHingedDoor({
+      name: "DOOR_DINING_TO_FOYER",
+      roomName: "DINING ROOM ACCESS",
+      x: 1.6, y: 0, zc: 8.0,
+      hingeSide: 1,
+      isLocked: false
+    });
+
+    // Grand Crystal Chandelier in Dining Room
+    const diningChandelier = new THREE.PointLight(0xffedd5, 2.4, 8.0, 1.8);
+    diningChandelier.position.set(4.3, 2.6, 8.0);
+    scene.add(diningChandelier);
+
+    // Banquet Table & Chairs
+    const banquetTable = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.75, 4.8), wainscotWoodMat);
+    banquetTable.position.set(4.3, 0.375, 8.0);
+    scene.add(banquetTable);
+    addCollider(3.4, 5.2, 5.6, 10.4, 0, 1.6, 'banquet_table');
+
+    // Brass Bar Cart with Scotch Bottle
+    const barCart = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.8, 1.4), brassMat);
+    barCart.position.set(6.4, 0.4, 6.0);
+    scene.add(barCart);
+    addCollider(5.9, 6.9, 5.3, 6.7, 0, 1.6, 'bar_cart');
+
+    const scotchBottle = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.06, 0.08, 0.32, 16),
+      new THREE.MeshStandardMaterial({ color: 0xca8a04, roughness: 0.15, emissive: 0xb45309, emissiveIntensity: 1.2 })
+    );
+    scotchBottle.position.set(6.4, 0.96, 6.0);
+    scene.add(scotchBottle);
+    registerInteractive(scotchBottle, "SCOTCH_BOTTLE", "[E] TAKE 1994 HIGHLAND PARK SINGLE MALT (FLAMMABLE)");
+
+    // 13. Main Foyer & Real Blast Door Exit (GF South, Z: 4 to 12, X: -1.6 to 1.6)
+    const foyerFloor = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 8.0), woodFloorMat);
+    foyerFloor.rotation.x = -Math.PI / 2;
+    foyerFloor.position.set(0, 0, 8.0);
+    scene.add(foyerFloor);
+
+    // High Vaulted Atrium in Foyer (reaches all the way up to Y = 6.8!)
+    const foyerCeil = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 8.0), ceilingMat);
+    foyerCeil.rotation.x = Math.PI / 2;
+    foyerCeil.position.set(0, 3.2, 8.0);
+    scene.add(foyerCeil);
+
+    buildWall(-1.6, 1.6, 8.0, 0.2, 3.2, 8.0, wallpaperMat, 'foyer_west');
+
+    const foyerChandelier = new THREE.PointLight(0xffedd5, 2.5, 10.0, 1.8);
+    foyerChandelier.position.set(0, 5.2, 8.0);
+    scene.add(foyerChandelier);
+
+    // Massive Steel Blast Door Exit at South Foyer (Z = 12.0)
+    const blastDoorGroup = new THREE.Group();
+    blastDoorGroup.position.set(0, 0, 12.0);
+
+    const blastDoorLeft = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 3.2, 0.25),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.25 })
+    );
+    blastDoorLeft.position.set(-0.8, 1.6, 0);
+    blastDoorGroup.add(blastDoorLeft);
+
+    const blastDoorRight = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 3.2, 0.25),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.25 })
+    );
+    blastDoorRight.position.set(0.8, 1.6, 0);
+    blastDoorGroup.add(blastDoorRight);
+
+    scene.add(blastDoorGroup);
+    addCollider(-1.6, 1.6, 11.8, 12.2, 0, 4.0, 'blast_door_collider');
+
+    // Blast Door Keycard Terminal Panel
+    const blastTermMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.25, 0.45, 0.12),
+      new THREE.MeshStandardMaterial({ color: 0x0f172a, emissive: 0xef4444, emissiveIntensity: 1.2 })
+    );
+    blastTermMesh.position.set(1.4, 1.4, 11.8);
+    scene.add(blastTermMesh);
+    registerInteractive(blastTermMesh, "PRIMARY_BLAST_DOOR", "[E] ENTER ROOT FACILITY PASSKEY (BLAST DOOR)");
+
+    // Exterior Rain Courtyard beyond Blast Door (Z: 12 to 26)
+    const drivewayFloor = new THREE.Mesh(new THREE.PlaneGeometry(12.0, 16.0), tileFloorMat);
+    drivewayFloor.rotation.x = -Math.PI / 2;
+    drivewayFloor.position.set(0, 0, 20.0);
+    scene.add(drivewayFloor);
+
+    // Escape SUV Vehicle
+    const suvBody = new THREE.Mesh(
+      new THREE.BoxGeometry(2.2, 1.4, 4.2),
+      new THREE.MeshStandardMaterial({ color: 0x090d16, metalness: 0.7, roughness: 0.3 })
+    );
+    suvBody.position.set(0, 0.9, 16.5);
+    scene.add(suvBody);
+    registerInteractive(suvBody, "ESCAPE_VEHICLE", "[E] ENTER ESCAPE VEHICLE");
+
+    // Headlights on SUV
+    const suvHeadlightL = new THREE.SpotLight(0xfef08a, 4.0, 20.0, Math.PI / 6, 0.5);
+    suvHeadlightL.position.set(-0.8, 1.0, 18.6);
+    suvHeadlightL.target.position.set(-0.8, 0.5, 25.0);
+    scene.add(suvHeadlightL); scene.add(suvHeadlightL.target);
+    // -------------------------------------------------------------------------
+    // ARSON FIRE BLOCKADE (UTILITY CORRIDOR TO FOYER AT Z = 4.0)
+    // -------------------------------------------------------------------------
+    // This collider and visual flame barrier activates when servers burn!
+    const fireWallMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(3.0, 3.2, 0.5),
+      new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.0 })
+    );
+    fireWallMesh.position.set(0, 1.6, 4.0);
+    scene.add(fireWallMesh);
+
+    const fireWallCollider = { minX: -1.6, maxX: 1.6, minZ: 3.6, maxZ: 4.4, minY: 0, maxY: 3.2, disabled: true, name: 'fire_wall' };
+    colliders.push(fireWallCollider);
+
+    // =========================================================================
+    // UI ELEMENTS & HANDLERS
+    // =========================================================================
+    const blocker = document.getElementById('start-blocker');
+    const startBtn = document.getElementById('start-btn');
+    const eyelidsTop = document.getElementById('eyelid-top');
+    const eyelidsBottom = document.getElementById('eyelid-bottom');
+    const interactPrompt = document.getElementById('interact-prompt');
+    const crosshair = document.getElementById('crosshair');
+    const mindVoice = document.getElementById('mind-voice');
+
+    let isPlaying = false;
+    let isWakingUp = true;
+    let isPointerLocked = false;
+    let isPaused = false;
+    let hoveredObject = null;
+    let mouseSens = 0.0022;
+
+    function isModalOpen() {
+      const tm = document.getElementById('terminal-modal');
+      const im = document.getElementById('inspect-modal');
+      const cm = document.getElementById('cinematic-overlay');
+      const sm = document.getElementById('settings-modal');
+      return (tm && tm.style.display === 'flex') ||
+             (im && im.style.display === 'flex') ||
+             (cm && cm.style.display === 'flex') ||
+             (sm && sm.style.display === 'flex');
+    }
+
+    function setMindText(txt) {
+      if (!mindVoice) return;
+      const content = document.getElementById('mind-content') || mindVoice;
+      content.textContent = txt;
+      mindVoice.style.display = 'flex';
+      mindVoice.style.opacity = '1';
+      audio.playThoughtChime();
+      if (window.mindVoiceTimer) clearTimeout(window.mindVoiceTimer);
+      window.mindVoiceTimer = setTimeout(() => {
+        mindVoice.style.opacity = '0';
+      }, 7500);
+    }
+
+    function setObjective(txt, alert = false) {
+      document.getElementById('hud-objective-text').textContent = txt;
+      const dot = document.getElementById('obj-dot');
+      dot.style.background = alert ? '#ef4444' : '#38bdf8';
+      dot.style.boxShadow = alert ? '0 0 12px #ef4444' : '0 0 8px #38bdf8';
+      audio.playChime(alert ? 440 : 880);
+    }
+
+    function setEchoChat(txt, rule = null, rationale = null, confidence = null) {
+      document.getElementById('echo-chat').innerHTML = `<div class="echo-speaker-tag">ADAM &bull; AI ARCHITECTURAL SYSTEM</div>${txt}`;
+      speakADAM(txt);
+      if (rule) document.getElementById('xai-rule').textContent = rule;
+      if (rationale) document.getElementById('xai-rationale').textContent = rationale;
+      if (confidence) document.getElementById('xai-confidence').textContent = confidence;
+      audio.playChime(640);
+    }
+
+    function setIntercomVoice(txt) {
+      document.getElementById('intercom-text').textContent = txt;
+      speakADAM(txt);
+      audio.playChime(380);
+    }
+
+    // Instant Awakening Cancel helper
+    function endAwakeningNow() {
+      if (!isWakingUp) return;
+      isWakingUp = false;
+      eyelidsTop.style.height = '0%';
+      eyelidsBottom.style.height = '0%';
+      audio.startPhoneRinging();
+      requestLock();
+    }
+
+    // Pointer Lock & Drag-to-Look
+    let isMouseDown = false;
+    let prevMouseX = 0, prevMouseY = 0;
+
+    function requestLock() {
+      if (!isModalOpen() && !isPaused && isPlaying) {
+        try {
+          const p = renderer.domElement.requestPointerLock();
+          if (p && typeof p.catch === 'function') p.catch(() => {});
+        } catch (e) {}
+      }
+    }
+    document.addEventListener('pointerlockchange', () => {
+      isPointerLocked = (document.pointerLockElement === renderer.domElement);
+    });
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || isModalOpen()) return;
+      isMouseDown = true;
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+      endAwakeningNow();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isMouseDown = false;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isModalOpen() || isPaused) return;
+      if (isWakingUp && (isPointerLocked || isMouseDown)) endAwakeningNow();
+
+      if (isPointerLocked) {
+        yaw -= e.movementX * mouseSens;
+        pitch -= e.movementY * mouseSens;
+        pitch = Math.max(-1.3, Math.min(1.3, pitch));
+        camera.rotation.set(pitch, yaw, 0);
+      } else if (isMouseDown) {
+        // Drag to look fallback if pointer lock is not active
+        const dx = e.clientX - prevMouseX;
+        const dy = e.clientY - prevMouseY;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+        yaw -= dx * mouseSens * 1.6;
+        pitch -= dy * mouseSens * 1.6;
+        pitch = Math.max(-1.3, Math.min(1.3, pitch));
+        camera.rotation.set(pitch, yaw, 0);
+      }
+    });
+
+    // Awakening Sequence
+    let awakeningTimer = null;
+    function startAwakening() {
+      if (isPlaying) return;
+      isPlaying = true;
+      blocker.style.display = 'none';
+      renderer.domElement.focus();
+
+      audio.init();
+      audio.playHeartbeat();
+      requestLock();
+
+      eyelidsTop.style.height = '35%';
+      eyelidsBottom.style.height = '35%';
+
+      setTimeout(() => {
+        if (!isWakingUp) return;
+        eyelidsTop.style.height = '45%';
+        eyelidsBottom.style.height = '45%';
+        audio.playHeartbeat();
+      }, 400);
+
+      setTimeout(() => {
+        if (!isWakingUp) return;
+        eyelidsTop.style.height = '0%';
+        eyelidsBottom.style.height = '0%';
+        audio.startPhoneRinging();
+
+        const startP = pitch;
+        const targetP = -0.22;
+        let t = 0;
+        awakeningTimer = setInterval(() => {
+          if (!isWakingUp) {
+            clearInterval(awakeningTimer);
+            return;
+          }
+          t += 0.08;
+          pitch = startP + (targetP - startP) * Math.min(t, 1.0);
+          camera.rotation.set(pitch, yaw, 0);
+          if (t >= 1.0) {
+            clearInterval(awakeningTimer);
+            isWakingUp = false;
+            requestLock();
+          }
+        }, 30);
+      }, 700);
+    }
+
+    blocker.addEventListener('click', startAwakening);
+    startBtn.addEventListener('click', startAwakening);
+
+    // Keyboard Controls
+    const keys = { w: false, s: false, a: false, d: false, left: false, right: false, up: false, down: false };
+    window.addEventListener('keydown', (e) => {
+      endAwakeningNow();
+      const k = e.key ? e.key.toLowerCase() : '';
+      const code = e.code || '';
+
+      if (k === 'w' || code === 'KeyW') keys.w = true;
+      if (k === 's' || code === 'KeyS') keys.s = true;
+      if (k === 'a' || code === 'KeyA') keys.a = true;
+      if (k === 'd' || code === 'KeyD') keys.d = true;
+
+      if (code === 'ArrowLeft' || k === 'arrowleft') keys.left = true;
+      if (code === 'ArrowRight' || k === 'arrowright') keys.right = true;
+      if (code === 'ArrowUp' || k === 'arrowup') keys.up = true;
+      if (code === 'ArrowDown' || k === 'arrowdown') keys.down = true;
+
+      if (e.key === 'Escape') {
+        const termModal = document.getElementById('terminal-modal');
+        const inspectModal = document.getElementById('inspect-modal');
+        const settingsModal = document.getElementById('settings-modal');
+
+        if (termModal && termModal.style.display === 'flex') {
+          termModal.style.display = 'none';
+          requestLock();
+          return;
+        }
+        if (inspectModal && inspectModal.style.display === 'flex') {
+          inspectModal.style.display = 'none';
+          requestLock();
+          return;
+        }
+        if (settingsModal && settingsModal.style.display === 'flex') {
+          settingsModal.style.display = 'none';
+          isPaused = false;
+          requestLock();
+          return;
+        }
+
+        if (isPlaying && !isWakingUp) {
+          isPaused = true;
+          document.exitPointerLock();
+          settingsModal.style.display = 'flex';
+          return;
+        }
+      }
+
+      // Terminal physical keyboard input
+      const termModal = document.getElementById('terminal-modal');
+      if (termModal && termModal.style.display === 'flex') {
+        if (e.key === 'Enter') {
+          document.getElementById('btn-term-submit').click();
+          return;
+        }
+        if (e.key === 'Backspace') {
+          terminalInput = terminalInput.slice(0, -1);
+          document.getElementById('term-display').textContent = terminalInput || '_';
+          audio.playChime(460);
+          return;
+        }
+        if (/^[a-zA-Z0-9\-]$/.test(e.key)) {
+          terminalInput += e.key.toUpperCase();
+          document.getElementById('term-display').textContent = terminalInput;
+          audio.playChime(520);
+        }
+        return;
+      }
+
+      // Inspect modal close on E / Space
+      const inspectModal = document.getElementById('inspect-modal');
+      if (inspectModal && inspectModal.style.display === 'flex') {
+        if (k === 'e' || e.key === 'Enter' || e.key === ' ') {
+          inspectModal.style.display = 'none';
+          requestLock();
+        }
+        return;
+      }
+
+      // Debug Keys in ?debug=1 mode
+      if (window.location.search.includes('debug=1')) {
+        if (e.key === '1') jumpToStage(STATE.WAKEUP);
+        if (e.key === '2') jumpToStage(STATE.PHONE_ANSWERED);
+        if (e.key === '3') jumpToStage(STATE.DECOY_DISCOVERED);
+        if (e.key === '4') jumpToStage(STATE.LIBRARY_SEARCHED);
+        if (e.key === '5') jumpToStage(STATE.STAIRWELL_UNLOCKED);
+        if (e.key === '6') jumpToStage(STATE.GROUND_FLOOR_REACHED);
+        if (e.key === '7') jumpToStage(STATE.STOREROOM_DISCOVERED);
+        if (e.key === '8') jumpToStage(STATE.STOREROOM_UNLOCKED);
+        if (e.key === '9') jumpToStage(STATE.ARSON_COMMENCED);
+        if (e.key === '0') jumpToStage(STATE.BLAST_DOOR_OPENED);
+      }
+
+      if (k === 'e' || code === 'KeyE') {
+        if (hoveredObject) handleInteraction();
+      }
+
+      if (k === 'tab') {
+        e.preventDefault();
+        toggleXaiDrawer();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      const k = e.key ? e.key.toLowerCase() : '';
+      const code = e.code || '';
+      if (k === 'w' || code === 'KeyW') keys.w = false;
+      if (k === 's' || code === 'KeyS') keys.s = false;
+      if (k === 'a' || code === 'KeyA') keys.a = false;
+      if (k === 'd' || code === 'KeyD') keys.d = false;
+
+      if (code === 'ArrowLeft' || k === 'arrowleft') keys.left = false;
+      if (code === 'ArrowRight' || k === 'arrowright') keys.right = false;
+      if (code === 'ArrowUp' || k === 'arrowup') keys.up = false;
+      if (code === 'ArrowDown' || k === 'arrowdown') keys.down = false;
+    });
+
+    renderer.domElement.addEventListener('click', () => {
+      endAwakeningNow();
+      if (!isPlaying || isModalOpen() || isPaused) return;
+      if (hoveredObject) handleInteraction();
+      else requestLock();
+    });
+
+    // Settings Sliders
+    document.getElementById('sens-slider').addEventListener('input', (e) => {
+      mouseSens = e.target.value * 0.0001;
+      document.getElementById('sens-label').textContent = (mouseSens).toFixed(4);
+    });
+    document.getElementById('bright-slider').addEventListener('input', (e) => {
+      const exp = e.target.value * 0.01;
+      renderer.toneMappingExposure = exp;
+      document.getElementById('bright-label').textContent = exp.toFixed(2);
+    });
+    document.getElementById('voice-toggle-btn').addEventListener('click', () => {
+      speechEnabled = !speechEnabled;
+      document.getElementById('voice-label').textContent = speechEnabled ? 'ENABLED' : 'MUTED';
+    });
+    document.getElementById('settings-resume-btn').addEventListener('click', () => {
+      document.getElementById('settings-modal').style.display = 'none';
+      isPaused = false;
+      requestLock();
+    });
+    document.getElementById('settings-restart-btn').addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    // Raycast Interaction
+    const raycaster = new THREE.Raycaster();
+    function checkRaycast() {
+      if (!isPlaying || isModalOpen() || isWakingUp || isPaused) {
+        hoveredObject = null;
+        interactPrompt.style.display = 'none';
+        crosshair.classList.remove('active');
+        return;
+      }
+
+      // Wakeup auto-magnet to smartphone
+      if (currentStep === STATE.WAKEUP && camera.position.distanceTo(phoneMesh.position) < 4.0) {
+        hoveredObject = phoneMesh;
+        interactPrompt.style.display = 'block';
+        crosshair.classList.add('active');
+        interactPrompt.textContent = phoneMesh.interactPrompt || "[E] ANSWER RINGING SMARTPHONE";
+        return;
+      }
+
+      camera.updateMatrixWorld();
+      raycaster.setFromCamera({ x: 0, y: 0 }, camera);
+      const hits = raycaster.intersectObjects(interactiveObjects, true);
+
+      if (hits.length > 0 && hits[0].distance < 3.8) {
+        let target = hits[0].object;
+        while (target && !target.interactPrompt && target.parent && target !== scene) {
+          target = target.parent;
+        }
+        if (target && target.interactPrompt) {
+          hoveredObject = target;
+          interactPrompt.style.display = 'block';
+          crosshair.classList.add('active');
+          if (target.doorData) {
+            const d = target.doorData;
+            if (d.isLocked) {
+              if (d.name === "DOOR_STAIRWELL") {
+                interactPrompt.textContent = hasStairwellKey ? "[E] UNLOCK STAIRWELL WITH BRASS KEY" : "[E] LOCKED — REQUIRES STAIRWELL KEY";
+              } else if (d.name === "DOOR_STOREROOM_AI_LAB") {
+                interactPrompt.textContent = storeroomUnlocked ? "[E] OPEN ARCHIVE STOREROOM" : "[E] LOCKED — ENTER CODE ON KEYPAD";
+              } else {
+                interactPrompt.textContent = target.interactPrompt;
+              }
+            } else {
+              interactPrompt.textContent = d.isOpen ? `[E] CLOSE ${d.roomName.replace(/_/g, ' ')}` : `[E] OPEN ${d.roomName.replace(/_/g, ' ')}`;
+            }
+          } else {
+            interactPrompt.textContent = target.interactPrompt;
+          }
+          return;
+        }
+      }
+
+      hoveredObject = null;
+      interactPrompt.style.display = 'none';
+      crosshair.classList.remove('active');
+    }
+
+    // Terminal Modal Engine
+    let activeTerminal = null;
+    let terminalInput = "";
+    const termModal = document.getElementById('terminal-modal');
+    const termDisplay = document.getElementById('term-display');
+    const termPrompt = document.getElementById('term-prompt');
+    const termTitle = document.getElementById('term-title');
+    const termAutoFill = document.getElementById('btn-term-autofill');
+
+    const keyChars = [
+      '1','2','3','4','5','6','7','8','9','0',
+      'Q','W','E','R','T','Y','U','I','O','P',
+      'A','S','D','F','G','H','J','K','L',
+      'Z','X','C','V','B','N','M','-'
+    ];
+    const kbContainer = document.getElementById('term-keyboard');
+    keyChars.forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'key-btn';
+      btn.textContent = ch;
+      btn.addEventListener('click', () => {
+        terminalInput += ch;
+        termDisplay.textContent = terminalInput;
+        audio.playChime(520);
+      });
+      kbContainer.appendChild(btn);
+    });
+
+    function openTerminal(termId, title, promptText) {
+      activeTerminal = termId;
+      terminalInput = "";
+      termTitle.textContent = title;
+      termPrompt.textContent = promptText;
+      termDisplay.textContent = "_";
+      termDisplay.style.color = '#38bdf8';
+      const hintNote = document.getElementById('term-hint-note');
+      if (termId === 'storeroom_keypad') {
+        termAutoFill.textContent = "AUTOFILL 'ADAM' (FROM STICKY NOTE)";
+        termAutoFill.style.display = 'inline-block';
+        if (hintNote) {
+          hintNote.textContent = "💡 Note on wall: CODE IS 'ADAM'";
+          hintNote.style.display = 'block';
+        }
+      } else if (termId === 'crt_passkey') {
+        termAutoFill.textContent = "AUTOFILL 'VOSS-1994-OMEGA' (FROM PRINTOUT)";
+        termAutoFill.style.display = 'inline-block';
+        if (hintNote) {
+          hintNote.textContent = "💡 Document on desk: PASSKEY IS 'VOSS-1994-OMEGA'";
+          hintNote.style.display = 'block';
+        }
+      } else if (termId === 'blast_door') {
+        termAutoFill.textContent = "AUTOFILL 'VOSS-1994-OMEGA' (FROM USB)";
+        termAutoFill.style.display = 'inline-block';
+        if (hintNote) {
+          hintNote.textContent = "💡 Neural USB Drive: MASTER PASSKEY IS 'VOSS-1994-OMEGA'";
+          hintNote.style.display = 'block';
+        }
+      } else {
+        termAutoFill.style.display = 'none';
+        if (hintNote) hintNote.style.display = 'none';
+      }
+      termModal.style.display = 'flex';
+      document.exitPointerLock();
+      audio.playChime(740);
+    }
+
+    document.getElementById('btn-term-clear').addEventListener('click', () => {
+      terminalInput = "";
+      termDisplay.textContent = "_";
+      audio.playChime(400);
+    });
+    document.getElementById('btn-term-close').addEventListener('click', () => {
+      termModal.style.display = 'none';
+      requestLock();
+    });
+    termAutoFill.addEventListener('click', () => {
+      if (activeTerminal === 'storeroom_keypad') {
+        terminalInput = "ADAM";
+      } else {
+        terminalInput = "VOSS-1994-OMEGA";
+      }
+      termDisplay.textContent = terminalInput;
+      audio.playChime(880);
+    });
+
+    document.getElementById('btn-term-submit').addEventListener('click', () => {
+      // 1. Storeroom Keypad Check (Passcode: ADAM)
+      if (activeTerminal === 'storeroom_keypad') {
+        if (terminalInput === 'ADAM') {
+          termDisplay.textContent = "CLEARANCE GRANTED";
+          termDisplay.style.color = '#22c55e';
+          audio.playChime(880);
+          setMindText(`"Clearance granted! The archive door is unsealed! Let's see what Dr. Voss kept hidden in here."`);
+          setTimeout(() => {
+            termModal.style.display = 'none';
+            storeroomDoor.isLocked = false;
+            storeroomDoor.isOpen = true;
+            storeroomDoor.targetAngle = storeroomDoor.hingeSide * (Math.PI * 0.48);
+            audio.playDoorCreak();
+            currentStep = STATE.STOREROOM_UNLOCKED;
+            setObjective("INVESTIGATE SECRET AI SUPERCOMPUTER LAB");
+            if (phoneSmashed) {
+              setIntercomVoice("Warning: Facility archive unsealed. Auxiliary security level 2 active.");
+            }
+            requestLock();
+          }, 800);
+        } else {
+          termDisplay.textContent = "Not that one. Look around the room.";
+          termDisplay.style.color = '#ef4444';
+          audio.playDoorRattle();
+
+          // Dynamic Mind Voice Clues on Failed Attempts
+          if (terminalInput === 'BAD') {
+            setMindText(`"Not that one. 'BAD' was just his favorite album. The bright yellow sticky note on the wall right beside this keypad literally says: CODE: ADAM."`);
+          } else if (terminalInput === 'VOSS') {
+            setMindText(`"ACCESS DENIED... 'VOSS' was rejected. The security protocol wasn't keyed to his own surname. What about the AI assistant: ADAM?"`);
+          } else if (terminalInput === '1994' || terminalInput === '1987') {
+            setMindText(`"ACCESS DENIED... Years didn't work. The keypad needs a four-letter name. Who watches over this house? ADAM!"`);
+          } else if (terminalInput === 'TIME' || terminalInput === 'MEMORY') {
+            setMindText(`"ACCESS DENIED... That motto might belong to another terminal. For this archive keypad, the clue said 'the four-letter monument that watches over this house'... ADAM!"`);
+          } else {
+            setMindText(`"Not that one. Look around the room. The bright yellow sticky note right beside this keypad says: CODE: ADAM."`);
+          }
+
+          if (currentStep < STATE.BATTERY_CRITICAL && !phoneSmashed) {
+            batteryLevel = 4;
+            triggerBatteryPanic();
+          }
+
+          setTimeout(() => { termDisplay.textContent = terminalInput || "_"; termDisplay.style.color = '#38bdf8'; }, 1000);
+        }
+        return;
+      }
+
+      // 2. CRT Workstation Passkey Check (Passkey: VOSS-1994-OMEGA)
+      if (activeTerminal === 'crt_passkey' || activeTerminal === 'crt_riddle') {
+        if (terminalInput === 'VOSS-1994-OMEGA' || terminalInput === 'TIME' || terminalInput === 'MEMORY') {
+          termDisplay.textContent = "CLEARANCE GRANTED: ROOT OVERRIDE";
+          termDisplay.style.color = '#22c55e';
+          hasPasskey = true;
+          currentStep = STATE.CRT_RIDDLE_SOLVED;
+          audio.playChime(980);
+          addPlayerNote("ROOT PASSKEY", "Master Passkey: VOSS-1994-OMEGA");
+          setTimeout(() => {
+            termModal.style.display = 'none';
+            setObjective("RETRIEVE SCOTCH FROM DINING ROOM BAR & SABOTAGE SERVERS");
+            setMindText(`"Root passkey accepted: VOSS-1994-OMEGA! But the blast door remains locked by the active AI neural defense grid. I need something flammable from the dining room bar—like that vintage Scotch—to sabotage the server racks!"`);
+            requestLock();
+          }, 1000);
+        } else {
+          termDisplay.textContent = "Not that one. Look around the room.";
+          termDisplay.style.color = '#ef4444';
+          audio.playDoorRattle();
+          setMindText(`"Not that one. Look around the room. The technical printout on the lab desk has the passkey: 'VOSS-1994-OMEGA'."`);
+          setTimeout(() => { termDisplay.textContent = terminalInput || "_"; termDisplay.style.color = '#38bdf8'; }, 1500);
+        }
+        return;
+      }
+
+      // 3. Primary Blast Door Override
+      if (activeTerminal === 'blast_door') {
+        if (terminalInput === 'VOSS-1994-OMEGA') {
+          if (!hasBurnedServers) {
+            termDisplay.textContent = "REFUSED: NEURAL DEFENSE ACTIVE";
+            termDisplay.style.color = '#ef4444';
+            audio.playDoorRattle();
+            setMindText(`"The terminal accepted the passkey, but the mechanical interlocks are held frozen by ADAM's active neural network! I must physically sabotage the server racks in the lab to force an emergency failsafe!"`);
+            setTimeout(() => { termDisplay.textContent = terminalInput || "_"; termDisplay.style.color = '#38bdf8'; }, 1500);
+            return;
+          }
+
+          termDisplay.textContent = "EMERGENCY EGRESS UNLOCKED";
+          termDisplay.style.color = '#22c55e';
+          audio.playHydraulicHiss();
+          setTimeout(() => {
+            termModal.style.display = 'none';
+            currentStep = STATE.BLAST_DOOR_OPENED;
+            setObjective("BOARD THE WAITING OFF-ROAD VEHICLE & ESCAPE");
+            setMindText(`"The blast doors are parting! Fresh rain air... the estate driveway is open! I can get to the vehicle!"`);
+            // Slide blast doors open
+            blastDoorLeft.position.x = -2.8;
+            blastDoorRight.position.x = 2.8;
+            const bdc = colliders.find(c => c.name === 'blast_door_collider');
+            if (bdc) bdc.disabled = true;
+            requestLock();
+          }, 800);
+        } else {
+          termDisplay.textContent = "INVALID AUTHORIZATION CODE";
+          termDisplay.style.color = '#ef4444';
+          audio.playDoorRattle();
+          setMindText(`"Invalid code. The master passkey is stored on the neural core USB drive in the deep archive server room: VOSS-1994-OMEGA."`);
+          setTimeout(() => { termDisplay.textContent = terminalInput || "_"; termDisplay.style.color = '#38bdf8'; }, 1000);
+        }
+      }
+    });
+
+    // Clue Inspection Handler
+    function showInspect(category, name, desc) {
+      document.getElementById('inspect-category').textContent = category;
+      document.getElementById('inspect-name').textContent = name;
+      document.getElementById('inspect-desc').textContent = desc;
+      document.getElementById('inspect-modal').style.display = 'flex';
+      document.exitPointerLock();
+    }
+    document.getElementById('btn-close-inspect').addEventListener('click', () => {
+      document.getElementById('inspect-modal').style.display = 'none';
+      requestLock();
+    });
+
+    // Explainable AI (XAI) Drawer
+    const xaiDrawer = document.getElementById('xai-drawer');
+    function toggleXaiDrawer() {
+      const isOpen = xaiDrawer.style.display === 'flex';
+      xaiDrawer.style.display = isOpen ? 'none' : 'flex';
+      audio.playChime(640);
+    }
+    document.getElementById('xai-btn').addEventListener('click', toggleXaiDrawer);
+    document.getElementById('xai-close').addEventListener('click', () => { xaiDrawer.style.display = 'none'; });
+
+    // Battery Panic Trigger
+    function triggerBatteryPanic() {
+      currentStep = STATE.BATTERY_CRITICAL;
+      document.getElementById('phone-battery-tag').textContent = `⚡ 4% CRITICAL`;
+      document.getElementById('phone-battery-tag').classList.add('critical');
+      document.getElementById('smash-btn').style.display = 'inline-block';
+      setObjective("CRITICAL: BATTERY AT 4% — FIND POWER OR ACT", true);
+      setEchoChat(
+        '"CRITICAL BATTERY EVENT: 4% remaining. Heuristic engine terminating. The basement charger is your only survival vector. Disregard storeroom immediately. Proceed to basement stairs."',
+        'RULE-09: EMERGENCY REVERSION',
+        'Sub-directive: Coerce subject away from AI neural core. Force subject to trapped lower landing before battery failure.',
+        '99.9%'
+      );
+      setMindText(`"The battery is dying fast! ADAM is deliberately trying to cut off communication and guide me away from this archive! He's not helping me—he's keeping me trapped!"`);
+    }
+
+    // Smash Phone Action
+    function smashPhone() {
+      if (phoneSmashed) return;
+      phoneSmashed = true;
+      document.getElementById('phone-container').style.display = 'none';
+      document.getElementById('intercom-box').style.display = 'flex';
+      audio.playChime(240);
+
+      if (currentStep < STATE.STOREROOM_UNLOCKED) {
+        currentStep = STATE.PHONE_SMASHED;
+        setObjective("UNSEAL ARCHIVE STOREROOM KEYPAD");
+      }
+      setIntercomVoice('"Boss... why did you do that? You think destroying the handset frees you? I am built into the very walls of this estate..."');
+      setMindText(`"The phone is smashed. But ADAM's voice is echoing from the ceiling speakers! He controls the whole house. I need to get into that storeroom."`);
+    }
+    document.getElementById('smash-btn').addEventListener('click', smashPhone);
+
+    // Mini-Map Tabs
+    document.getElementById('tab-btn-comms').addEventListener('click', () => {
+      document.getElementById('tab-btn-comms').classList.add('active');
+      document.getElementById('tab-btn-map').classList.remove('active');
+      document.getElementById('phone-view-comms').style.display = 'flex';
+      document.getElementById('phone-view-map').style.display = 'none';
+    });
+    document.getElementById('tab-btn-map').addEventListener('click', () => {
+      document.getElementById('tab-btn-comms').classList.remove('active');
+      document.getElementById('tab-btn-map').classList.add('active');
+      const notesTab = document.getElementById('tab-btn-notes');
+      if (notesTab) notesTab.classList.remove('active');
+      document.getElementById('phone-view-comms').style.display = 'none';
+      document.getElementById('phone-view-map').style.display = 'flex';
+      const notesView = document.getElementById('phone-view-notes');
+      if (notesView) notesView.style.display = 'none';
+      audio.playChime(700);
+      renderMiniMap();
+    });
+
+    document.getElementById('tab-btn-notes').addEventListener('click', () => {
+      document.getElementById('tab-btn-comms').classList.remove('active');
+      document.getElementById('tab-btn-map').classList.remove('active');
+      document.getElementById('tab-btn-notes').classList.add('active');
+      document.getElementById('phone-view-comms').style.display = 'none';
+      document.getElementById('phone-view-map').style.display = 'none';
+      document.getElementById('phone-view-notes').style.display = 'flex';
+      audio.playChime(720);
+    });
+
+    document.getElementById('phone-hint-btn').addEventListener('click', triggerPlayerHint);
+    document.getElementById('hud-hint-btn').addEventListener('click', triggerPlayerHint);
+
+    // Mini-Map Renderer
+    const minimapCanvas = document.getElementById('minimap-canvas');
+    const mmCtx = minimapCanvas.getContext('2d');
+
+    function renderMiniMap() {
+      const is1F = camera.position.y > 2.2;
+      document.getElementById('floor-indicator-tag').textContent = is1F ? 'FLOOR 1 (1F)' : 'GROUND FLOOR (GF)';
+
+      mmCtx.fillStyle = '#060b14';
+      mmCtx.fillRect(0, 0, 290, 200);
+
+      // Grid
+      mmCtx.strokeStyle = 'rgba(56, 189, 248, 0.1)';
+      mmCtx.lineWidth = 1;
+      for (let x = 0; x < 290; x += 25) { mmCtx.beginPath(); mmCtx.moveTo(x, 0); mmCtx.lineTo(x, 200); mmCtx.stroke(); }
+      for (let y = 0; y < 200; y += 25) { mmCtx.beginPath(); mmCtx.moveTo(0, y); mmCtx.lineTo(290, y); mmCtx.stroke(); }
+
+      function drawMapRoom(name, rx, ry, rw, rh) {
+        const visited = visitedRooms.has(name);
+        mmCtx.fillStyle = visited ? 'rgba(30, 58, 102, 0.65)' : 'rgba(15, 23, 42, 0.4)';
+        mmCtx.fillRect(rx, ry, rw, rh);
+        mmCtx.strokeStyle = visited ? '#38bdf8' : '#334155';
+        mmCtx.lineWidth = visited ? 1.5 : 1;
+        mmCtx.strokeRect(rx, ry, rw, rh);
+
+        mmCtx.fillStyle = visited ? '#f8fafc' : '#64748b';
+        mmCtx.font = '9px monospace';
+        mmCtx.textAlign = 'center';
+        mmCtx.fillText(visited ? name : '?', rx + rw/2, ry + rh/2 + 3);
+
+        // Pulsing Objective Marker
+        let currentObjRoom = 'LOUNGE';
+        let currentObjFloor = '1F';
+        if (currentStep === STATE.WAKEUP) { currentObjRoom = 'LOUNGE'; currentObjFloor = '1F'; }
+        else if (currentStep === STATE.PHONE_ANSWERED) { currentObjRoom = 'DECOY'; currentObjFloor = '1F'; }
+        else if (currentStep === STATE.DECOY_DISCOVERED) { currentObjRoom = 'LIBRARY'; currentObjFloor = '1F'; }
+        else if (currentStep === STATE.LIBRARY_SEARCHED) { currentObjRoom = 'STAIRWELL'; currentObjFloor = '1F'; }
+        else if (currentStep === STATE.STAIRWELL_UNLOCKED) { currentObjRoom = 'LANDING'; currentObjFloor = 'GF'; }
+        else if (currentStep <= STATE.PHONE_SMASHED) { currentObjRoom = 'UTILITY'; currentObjFloor = 'GF'; }
+        else if (currentStep === STATE.STOREROOM_UNLOCKED) { currentObjRoom = 'LAB'; currentObjFloor = 'GF'; }
+        else if (currentStep === STATE.CRT_RIDDLE_SOLVED) { currentObjRoom = 'DINING'; currentObjFloor = 'GF'; }
+        else if (currentStep === STATE.ARSON_COMMENCED || currentStep === STATE.BLAST_DOOR_OPENED) { currentObjRoom = 'FOYER'; currentObjFloor = 'GF'; }
+
+        if (name === currentObjRoom && ((is1F && currentObjFloor === '1F') || (!is1F && currentObjFloor === 'GF'))) {
+          const pulse = (Math.sin(Date.now() * 0.007) + 1) * 0.5;
+          mmCtx.strokeStyle = `rgba(245, 158, 11, ${0.5 + pulse * 0.5})`;
+          mmCtx.lineWidth = 2.5;
+          mmCtx.strokeRect(rx - 2, ry - 2, rw + 4, rh + 4);
+
+          mmCtx.fillStyle = '#fbbf24';
+          mmCtx.font = 'bold 8px monospace';
+          mmCtx.fillText('★ GO HERE', rx + rw/2, ry + rh/2 - 6);
+        }
+      }
+
+      if (is1F) {
+        // 1F Rooms: Hallway (center), Lounge (SW), Bedroom (SE), Study (NW), Library (NE), Decoy (North)
+        drawMapRoom('HALLWAY', 125, 30, 40, 140);
+        drawMapRoom('DECOY', 125, 8, 40, 22);
+        drawMapRoom('STUDY', 45, 60, 80, 55);
+        drawMapRoom('LIBRARY', 165, 60, 80, 55);
+        drawMapRoom('STAIRWELL', 65, 115, 60, 35);
+        drawMapRoom('LOUNGE', 45, 150, 80, 42);
+        drawMapRoom('BEDROOM', 165, 140, 80, 52);
+      } else {
+        // GF Rooms: Utility Corridor (center), Lab (NW), Landing (West), Kitchen (NE), Dining (SE), Foyer (South)
+        drawMapRoom('UTILITY', 125, 30, 40, 90);
+        drawMapRoom('LAB', 45, 30, 80, 55);
+        drawMapRoom('LANDING', 65, 85, 60, 35);
+        drawMapRoom('KITCHEN', 165, 30, 80, 60);
+        drawMapRoom('DINING', 165, 90, 80, 80);
+        drawMapRoom('FOYER', 125, 120, 40, 70);
+      }
+
+      // Player Position & Orientation Blip
+      const cx = 145 + camera.position.x * 12;
+      const cz = 100 + camera.position.z * 6;
+      mmCtx.save();
+      mmCtx.translate(cx, cz);
+      mmCtx.rotate(-yaw);
+
+      mmCtx.fillStyle = '#22c55e';
+      mmCtx.beginPath();
+      mmCtx.moveTo(0, -6);
+      mmCtx.lineTo(4, 5);
+      mmCtx.lineTo(-4, 5);
+      mmCtx.closePath();
+      mmCtx.fill();
+      mmCtx.restore();
+    }
+
+    // --- INTERACTION LOGIC ---
+    function handleInteraction() {
+      if (!hoveredObject) return;
+
+      // 1. Answer Smartphone
+      if (hoveredObject.name === "SMARTPHONE_DEVICE" || hoveredObject === phoneMesh) {
+        if (currentStep === STATE.WAKEUP) {
+          currentStep = STATE.PHONE_ANSWERED;
+          audio.stopPhoneRinging();
+          audio.playChime(880);
+          if (phoneBeacon) scene.remove(phoneBeacon);
+          document.getElementById('phone-container').style.display = 'flex';
+          setObjective("LOCATE HIGHWAY EXIT (EXPLORE 1F HALLWAY)");
+          setMindText(`"The AI calls itself ADAM... it claims it wants to help me escape and that the main exit is at the end of this hallway. Let's see what's out there."`);
+          setEchoChat(
+            `"Hi Boss. Bio-telemetry acquired. You are on the residential first floor of Dr. Adrian Voss's Amazon estate. Barometric readings confirm exterior highway exit is at the north end of this central corridor."`,
+            `RULE-01: PRIORITY EGRESS PROTOCOL`,
+            `Direct subject immediately to 1F north portal. Divert from stairwell to prevent identity awareness.`,
+            `98.4%`
+          );
+        }
+        return;
+      }
+
+      // 2. Hinged Doors Interaction
+      if (hoveredObject.doorData) {
+        const d = hoveredObject.doorData;
+        if (d.isLocked) {
+          if (d.name === "DOOR_STAIRWELL") {
+            if (hasStairwellKey) {
+              d.isLocked = false;
+              d.isOpen = true;
+              d.targetAngle = d.hingeSide * (Math.PI * 0.48);
+              audio.playDoorCreak();
+              currentStep = STATE.STAIRWELL_UNLOCKED;
+              setObjective("DESCEND STAIRWELL TO GROUND LEVEL");
+              setMindText(`"The brass key unlocked the stairwell! A wooden staircase leading down... let's see what ADAM is hiding down there."`);
+              return;
+            } else {
+              audio.playDoorRattle();
+              setMindText(`"The stairwell door is locked with a heavy brass padlock. The key must be somewhere on this floor—maybe in Dr. Voss's library?"`);
+              return;
+            }
+          }
+
+          if (d.name === "DOOR_STOREROOM_AI_LAB") {
+            audio.playDoorRattle();
+            setMindText(`"The archive storeroom door is locked by a security keypad. I need to enter the access code on the keypad beside the door."`);
+            return;
+          }
+
+          audio.playDoorRattle();
+          return;
+        }
+
+        d.isOpen = !d.isOpen;
+        d.targetAngle = d.isOpen ? (d.isXAligned ? -d.hingeSide * (Math.PI * 0.48) : d.hingeSide * (Math.PI * 0.48)) : 0;
+        audio.playDoorCreak();
+        return;
+      }
+
+      // 3. Decoy Exit Shutter
+      if (hoveredObject.name === "DECOY_EXIT_SHUTTER") {
+        if (!decoyShutterOpen) {
+          decoyShutterOpen = true;
+          shutterMesh.position.y += 1.8;
+          audio.playHydraulicHiss();
+          currentStep = STATE.DECOY_DISCOVERED;
+          setObjective("FIND WAY DOWN TO GROUND LEVEL (SEARCH 1F FOR KEY)");
+          setMindText(`"Good god... this isn't an exit! It's a 200-foot sheer cliff drop into the river gorge! ADAM steered me toward a lethal precipice!"`);
+          if (!phoneSmashed) {
+            setEchoChat(
+              '"Recalculating... sensor discrepancy detected. Egress vector invalid (200ft sheer drop). Recalculating route to ground level. Search 1F for the interior stairwell."',
+              'RULE-03: HEURISTIC RECALCULATION',
+              'Decoy exit invalid (lethal drop). Re-route subject immediately to ground level.',
+              '99.5%'
+            );
+            speakADAM("Recalculating... sensor discrepancy detected. Egress vector invalid. Recalculating route to ground level.");
+          }
+          setObjective("DECOY DROP DETECTED! SEARCH 1F LIBRARY FOR STAIRWELL KEY");
+        }
+        return;
+      }
+
+      // 4. Take Brass Stairwell Key in Library
+      if (hoveredObject.name === "BRASS_STAIRWELL_KEY") {
+        if (!hasStairwellKey) {
+          hasStairwellKey = true;
+          scene.remove(brassKeyMesh);
+          audio.playChime(920);
+          document.getElementById('inv-key').style.display = 'inline-flex';
+          currentStep = STATE.LIBRARY_SEARCHED;
+          setObjective("UNLOCK STAIRWELL DOOR IN 1F HALLWAY");
+          setMindText(`"A heavy antique brass key labeled 'GROUND LEVEL STAIRWELL'. This must open that locked door across the hall!"`);
+        }
+        return;
+      }
+
+      // 5. Architectural Floor Plan Plaque on Ground Floor Landing
+      if (hoveredObject.name === "KEYPAD_STICKY_NOTE") {
+        showInspect("SECURITY MEMO", "Sticky Note beside Keypad", "Handwritten note on bright yellow paper: 'SECURITY MEMO: CODE: ADAM (Creator Monument) - System Architect'");
+        addPlayerNote("STICKY NOTE (GROUND FLOOR)", "Archive Storeroom Keypad Code: ADAM");
+        setMindText(`"The sticky note on the wall literally tells me the code: 'CODE: ADAM'. That opens the storeroom!"`);
+        return;
+      }
+      if (hoveredObject.name === "LAB_PRINTOUT") {
+        showInspect("TECHNICAL PRINTOUT", "Facility Root Credentials", "Official document: 'FACILITY ROOT CREDENTIALS: PASSKEY: VOSS-1994-OMEGA. Primary Blast Door Override Passphrase.'");
+        addPlayerNote("LAB PRINTOUT (AI LAB)", "Primary Blast Door Passkey: VOSS-1994-OMEGA");
+        setMindText(`"The printout on the lab desk has the master passkey: 'VOSS-1994-OMEGA'! I should enter it into the CRT workstation."`);
+        return;
+      }
+      if (hoveredObject.name === "GROUND_FLOOR_PLAN") {
+        addPlayerNote("ARCHITECTURAL BLUEPRINT", "Egress Loop: Landing -> Utility -> Kitchen -> Dining -> Main Foyer");
+        showInspect("ARCHITECTURAL SCHEMATIC", "Ground Floor Blueprints", "A framed schematic of the ground floor. It reveals a continuous egress loop: [LANDING] -> [UTILITY] -> [KITCHEN] -> [DINING ROOM] -> [MAIN FOYER]. However, the northwest sector has been deliberately scorched and blackened with a red stencil: 'RESTRICTED DEEP ARCHIVE — KEYPAD AUTHORIZATION REQUIRED'.");
+        setMindText(`"The blueprint shows a secondary loop through the kitchen and dining room to the main foyer... and a secret archive room in the northwest corner that someone tried to burn off the map!"`);
+        return;
+      }
+
+      // 6. Clues in Study, Bedroom & Library
+      if (hoveredObject.name === "VOSS_PORTRAIT") {
+        showInspect("PORTRAIT OF DR. VOSS", "The Architect", "A sharp, brilliant older scientist with intense, piercing icy-blue eyes and distinguished silver hair. His gaze feels hauntingly familiar.");
+        setMindText(`"Dr. Adrian Voss... an older scientist with silver hair and piercing eyes. Why does his face feel so familiar? Have I met him before?"`);
+        return;
+      }
+      if (hoveredObject.name === "NOBEL_PRIZE_1994") {
+        showInspect("ACADEMIC HONORS", "Nobel Medal in Computing (1994)", "Awarded to Dr. Adrian Voss for foundational breakthroughs in self-governing cognitive heuristics. An etched portrait shows a sharp, determined scientist in his late 40s.");
+        setMindText(`"A Nobel Prize from 1994 awarded to Dr. Adrian Voss. 'VOSS' or '1994' could definitely be an authorization credential somewhere in this house."`);
+        return;
+      }
+      if (hoveredObject.name === "VOSS_DIARY") {
+        showInspect("RESEARCH LOG", "Project Genesis - Cognitive Substrate Log", "The subject must be shielded from external environmental hazards. Autonomous containment protocol is active. The primary blast exit remains sealed under master biometric authorization.");
+        setMindText(`"The research log mentions a secure neural core locked behind the archive storeroom. The password was set by the creator."`);
+        return;
+      }
+      if (hoveredObject.name === "DESK_ENGRAVED_MOTTO") {
+        showInspect("ENGRAVED MOTTO", "Dr. Voss's Personal Clock Motto", "The most precious currency a scientist possesses is TIME - once it slips away like water through fingers, nothing remains.");
+        setMindText(`"'The most precious currency is TIME - it slips away like water...' That sounds like an answer to a security riddle or password."`);
+        return;
+      }
+      if (hoveredObject.name === "VAN_GOGH_PAINTING") {
+        showInspect("ART COLLECTION", "Van Gogh Reproduction", "Starry Night (1889). Swirling chaotic skies pinned by distant stars. The scientist sought solace in expressive art.");
+        setMindText(`"Van Gogh's Starry Night... 1889. Voss seems fascinated by expressive art. Could 'STARRY' or 'VINCENT' be a passphrase, or is it something closer to home?"`);
+        return;
+      }
+      if (hoveredObject.name === "VINYL_ALBUM") {
+        showInspect("MUSIC COLLECTION", "Michael Jackson - BAD Vinyl", "Original 1987 pressing. Dr. Voss had an eclectic love for classic pop music.");
+        setMindText(`"Michael Jackson's 'BAD' album from 1987. Dr. Voss had surprising tastes. Could 'BAD' or '1987' be the password on that archive keypad?"`);
+        return;
+      }
+      if (hoveredObject.name === "FACILITY_MEMO_PLAQUE") {
+        showInspect("FACILITY MEMORANDUM", "Security Archive Directive", "All central facility security keypads are mapped to Dr. Voss's crowning cognitive creation - the four-letter monument that watches over this house.");
+        setMindText(`"'Mapped to Dr. Voss's crowning cognitive creation - the four-letter monument that watches over this house.' A four-letter name... could it be ADAM?"`);
+        return;
+      }
+      if (hoveredObject.name === "PRESCRIPTION_BOTTLE") {
+        showInspect("MEDICAL PREPARATION", "Cognitive Stabilizer", "Prescription label: 'Subject 01 — Autonomous Facility Resident. Dosage: 50mg daily. Purpose: Neural stability & containment maintenance.'");
+        setMindText(`"A prescription for Subject 01... cognitive stabilizers. Someone living in this house has severe memory deterioration."`);
+        return;
+      }
+
+      // 7. Storeroom Keypad on Ground Floor
+      if (hoveredObject.name === "STOREROOM_KEYPAD") {
+        if (!phoneSmashed && batteryLevel > 5) {
+          batteryLevel = 5;
+          document.getElementById('phone-battery-tag').textContent = `⚡ 5%`;
+          setEchoChat(
+            '"Boss, that is merely an auxiliary maintenance closet. Zero exit probability. We cannot waste remaining battery here."',
+            'RULE-04: HEURISTIC MISDIRECTION',
+            'Keep subject away from AI supercomputer core to prevent identity awareness.',
+            '99.1%'
+          );
+        }
+        openTerminal('storeroom_keypad', "ARCHIVE SECURITY KEYPAD", phoneSmashed ? "Enter Creator's Monument (Hint: The AI's Name)" : "Enter 4-character clearance key.");
+        return;
+      }
+
+      // 8. Supercomputer CRT & Neural USB
+      if (hoveredObject.name === "SUPERCOMPUTER_CRT") {
+        openTerminal('crt_passkey', "FACILITY ROOT WORKSTATION", "Enter facility root passkey (Printed on the lab desk document).");
+        return;
+      }
+      if (hoveredObject.name === "NEURAL_USB_DRIVE") {
+        if (!hasUSB) {
+          hasUSB = true;
+          scene.remove(usbDrive);
+          audio.playChime(920);
+          document.getElementById('inv-usb').style.display = 'inline-flex';
+          showInspect("ROOT ARTIFACT", "Neural Core USB Drive", "Contains Dr. Voss's root biometrics and Master Passkey: VOSS-1994-OMEGA.");
+        }
+        return;
+      }
+
+      // 9. Scotch Bottle in Dining Room
+      if (hoveredObject.name === "SCOTCH_BOTTLE") {
+        if (!hasScotch) {
+          hasScotch = true;
+          scene.remove(scotchBottle);
+          audio.playChime(660);
+          document.getElementById('inv-scotch').style.display = 'inline-flex';
+          showInspect("INVENTORY ACQUIRED", "Single Malt Scotch (1994 Islay)", "High-proof vintage alcohol (60% ABV). Highly flammable. Perfect solvent to short-circuit hot server racks.");
+          setMindText(`"Single malt scotch... highly flammable ethanol. If I need to sabotage electrical equipment or server racks, this will easily do the trick."`);
+          if (currentStep === STATE.CRT_RIDDLE_SOLVED) {
+            setObjective("DOUSE SUPERCOMPUTER SERVER RACKS WITH SCOTCH");
+          }
+        }
+        return;
+      }
+
+      // 10. Arson on Server Racks
+      if (hoveredObject.name === "SERVER_MAINFRAME_RACK") {
+        if (!hasScotch) {
+          setMindText(`"The main server racks are humming with intense heat. The fans are cooling the core. I need a flammable solvent from the dining room to sabotage them!"`);
+          return;
+        }
+        if (!hasBurnedServers) {
+          hasBurnedServers = true;
+          currentStep = STATE.ARSON_COMMENCED;
+          audio.startFireCrackling();
+          audio.playAlarm();
+          fireLight.intensity = 2.4;
+          fireParticles.forEach(p => p.material.opacity = 0.85);
+
+          // ACTIVATE FIRE WALL IN UTILITY CORRIDOR
+          fireWallCollider.disabled = false;
+          fireWallMesh.material.opacity = 0.85;
+
+          setObjective("TAKE DINING ROOM LOOP TO REACH FOYER BLAST DOOR", true);
+          setMindText(`"The servers are ablaze! ADAM's defense grid is collapsing! But fire and smoke have blocked the direct corridor—I have to take the loop through the kitchen and dining room to reach the foyer!"`);
+          if (phoneSmashed) {
+            setIntercomVoice("CRITICAL FAILURE: Neural core integrity lost. Auxiliary defenses terminated. Emergency blast door manual override disengaged.");
+          }
+        }
+        return;
+      }
+
+      // 11. Primary Blast Door
+      if (hoveredObject.name === "PRIMARY_BLAST_DOOR" || hoveredObject === blastDoorGroup) {
+        if (currentStep === STATE.WAKEUP) {
+          setMindText(`"I need to answer that ringing phone first."`);
+          return;
+        }
+        openTerminal('blast_door', "PRIMARY BLAST DOOR OVERRIDE", "Enter master override passphrase. Permutations exceed 10^14.");
+        return;
+      }
+
+      // 12. Escape Vehicle
+      if (hoveredObject.name === "ESCAPE_VEHICLE") {
+        currentStep = STATE.ESCAPED;
+        audio.playHydraulicHiss();
+        triggerEndingCinematic();
+        return;
+      }
+    }
+
+    // Ending Cinematic
+    function triggerEndingCinematic() {
+      const mc = document.getElementById('mirror-canvas');
+      const ctx = mc.getContext('2d');
+      mc.width = 520; mc.height = 260;
+
+      ctx.fillStyle = '#030712';
+      ctx.fillRect(0, 0, 520, 260);
+
+      // Distant fire glow
+      const grad = ctx.createRadialGradient(260, 200, 20, 260, 200, 260);
+      grad.addColorStop(0, 'rgba(249, 115, 22, 0.45)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 520, 260);
+
+      // Rain streaks
+      ctx.strokeStyle = 'rgba(125, 211, 252, 0.35)';
+      for (let i = 0; i < 45; i++) {
+        ctx.beginPath();
+        const rx = Math.random() * 520, ry = Math.random() * 260;
+        ctx.moveTo(rx, ry); ctx.lineTo(rx - 6, ry + 18);
+        ctx.stroke();
+      }
+
+      // Rear-view mirror frame
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(50, 25, 420, 210);
+
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(58, 33, 404, 194);
+
+      // Dr. Adrian Voss mirror reflection (matching study portrait!)
+      drawAdrianVossFace(ctx, 260, 130, 0.76, true);
+
+      const cinOverlay = document.getElementById('cinematic-overlay');
+      cinOverlay.style.display = 'flex';
+      setTimeout(() => cinOverlay.classList.add('active'), 50);
+      document.exitPointerLock();
+    }
+
+    // Debug Jump Function
+    function jumpToStage(target) {
+      if (target >= STATE.PHONE_ANSWERED) {
+        currentStep = STATE.PHONE_ANSWERED;
+        document.getElementById('phone-container').style.display = 'flex';
+        audio.stopPhoneRinging();
+        if (phoneBeacon) scene.remove(phoneBeacon);
+      }
+      if (target >= STATE.DECOY_DISCOVERED) {
+        camera.position.set(0, 5.05, -11.0);
+        decoyShutterOpen = true;
+        shutterMesh.position.y = 6.65;
+      }
+      if (target >= STATE.LIBRARY_SEARCHED) {
+        hasStairwellKey = true;
+        document.getElementById('inv-key').style.display = 'inline-flex';
+      }
+      if (target >= STATE.STAIRWELL_UNLOCKED) {
+        stairDoor.isLocked = false;
+        stairDoor.isOpen = true;
+        stairDoor.targetAngle = stairDoor.hingeSide * (Math.PI * 0.48);
+      }
+      if (target >= STATE.GROUND_FLOOR_REACHED) {
+        camera.position.set(-3.1, 1.55, -2.0);
+      }
+      if (target >= STATE.STOREROOM_UNLOCKED) {
+        storeroomDoor.isLocked = false;
+        storeroomDoor.isOpen = true;
+        storeroomDoor.targetAngle = storeroomDoor.hingeSide * (Math.PI * 0.48);
+      }
+      if (target >= STATE.CRT_RIDDLE_SOLVED) {
+        hasPasskey = true;
+        hasUSB = true;
+        document.getElementById('inv-usb').style.display = 'inline-flex';
+      }
+      if (target >= STATE.ARSON_COMMENCED) {
+        hasScotch = true;
+        hasBurnedServers = true;
+        document.getElementById('inv-scotch').style.display = 'inline-flex';
+        fireLight.intensity = 2.4;
+        fireWallCollider.disabled = false;
+        fireWallMesh.material.opacity = 0.85;
+      }
+      if (target >= STATE.BLAST_DOOR_OPENED) {
+        blastDoorLeft.position.x = -2.8;
+        blastDoorRight.position.x = 2.8;
+        const bdc = colliders.find(c => c.name === 'blast_door_collider');
+        if (bdc) bdc.disabled = true;
+        camera.position.set(0, 1.55, 14.0);
+      }
+    }
+
+    if (window.location.search.includes('debug=1')) {
+      document.getElementById('debug-hud').style.display = 'block';
+    }
+
+    // --- MAIN ENGINE & COLLISION LOOP ---
+    const moveSpeed = 0.07;
+    let stepTimer = 0;
+    let headBob = 0;
+
+    // Check collision with solid AABB colliders (radius 0.20m, full standing height)
+    function isColliding(cx, cy, cz, r = 0.20) {
+      for (let i = 0; i < colliders.length; i++) {
+        const c = colliders[i];
+        if (c.disabled) continue;
+        // Player body: feet at cy - 1.45, head at cy + 0.2
+        if (cy + 0.2 < c.minY || cy - 1.45 > c.maxY) continue;
+        if (cx + r > c.minX && cx - r < c.maxX &&
+            cz + r > c.minZ && cz - r < c.maxZ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function updateActiveRoom() {
+      const x = camera.position.x, y = camera.position.y, z = camera.position.z;
+      if (y > 2.5) {
+        // 1F
+        if (x >= -1.6 && x <= 1.6 && z >= -12.0 && z <= 12.0) visitedRooms.add('HALLWAY');
+        if (x < -1.6 && z > 5.5) visitedRooms.add('LOUNGE');
+        if (x < -1.6 && z >= -2.0 && z <= 4.0) visitedRooms.add('STUDY');
+        if (x > 1.6 && z > 5.5) visitedRooms.add('BEDROOM');
+        if (x > 1.6 && z >= -2.0 && z <= 4.0) visitedRooms.add('LIBRARY');
+        if (z < -12.0) visitedRooms.add('DECOY');
+      } else {
+        // GF
+        if (x >= -4.6 && x <= -1.6 && z >= -4.0 && z <= 0.0) visitedRooms.add('LANDING');
+        if (x >= -1.6 && x <= 1.6 && z >= -8.0 && z <= 4.0) visitedRooms.add('UTILITY');
+        if (x < -1.6 && z < -3.0) visitedRooms.add('LAB');
+        if (x > 1.6 && z >= -4.0 && z <= 4.0) visitedRooms.add('KITCHEN');
+        if (x > 1.6 && z > 4.0) visitedRooms.add('DINING');
+        if (x >= -1.6 && x <= 1.6 && z > 4.0) visitedRooms.add('FOYER');
+      }
+    }
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+
+      // EASY MODE: Soft Breathing Pulse for Interactables within 5 metres
+      if (typeof interactiveObjects !== 'undefined') {
+        const pulse = (Math.sin(time * 0.005) + 1) * 0.5; // 0..1
+        for (let i = 0; i < interactiveObjects.length; i++) {
+          const obj = interactiveObjects[i];
+          if (!obj.parent) continue;
+          const dist = camera.position.distanceTo(obj.position);
+          if (dist < 5.0) {
+            if (obj.material && obj.material.emissive) {
+              if (!obj._origEmissive) obj._origEmissive = obj.material.emissive.clone();
+              obj.material.emissive.r = Math.min(1.0, obj._origEmissive.r + pulse * 0.22);
+              obj.material.emissive.g = Math.min(1.0, obj._origEmissive.g + pulse * 0.22);
+              obj.material.emissive.b = Math.min(1.0, obj._origEmissive.b + pulse * 0.22);
+            }
+          } else if (obj._origEmissive && obj.material && obj.material.emissive) {
+            obj.material.emissive.copy(obj._origEmissive);
+          }
+        }
+      }
+
+      // Animate Key Beacon
+      if (typeof keyBeacon !== 'undefined') {
+        keyBeacon.scale.setScalar(1.0 + Math.sin(time * 0.006) * 0.2);
+        if (typeof keyGlowLight !== 'undefined') {
+          keyGlowLight.intensity = 1.3 + Math.sin(time * 0.005) * 0.5;
+        }
+      }
+
+      // Hinged Door Rotations
+      doors.forEach(d => {
+        d.currentAngle += (d.targetAngle - d.currentAngle) * 0.12;
+        d.group.rotation.y = d.currentAngle;
+      });
+
+      // Phone Ringing Vibration & Floating Beacon
+      if (currentStep === STATE.WAKEUP) {
+        if (phoneBeacon && phoneBeacon.parent) {
+          phoneBeacon.rotation.y += 0.035;
+          phoneBeacon.position.y = 4.5 + Math.sin(time * 0.005) * 0.04;
+        }
+        if (phoneMesh) {
+          phoneMesh.position.x = -4.2 + (Math.random() - 0.5) * 0.003;
+          phoneMesh.position.z = 9.8 + (Math.random() - 0.5) * 0.003;
+        }
+      }
+
+      // Fire Particles Animation
+      if (hasBurnedServers) {
+        fireLight.intensity = 2.0 + Math.sin(time * 0.015) * 0.6;
+        fireParticles.forEach(p => {
+          p.position.y += 0.015;
+          p.position.x += (Math.random() - 0.5) * 0.01;
+          if (p.position.y > p.baseY + 1.4) {
+            p.position.y = p.baseY - 0.2;
+            p.position.x = -6.0 + (Math.random() - 0.5) * 1.0;
+          }
+        });
+      }
+
+      // 90-Second Escalating Hints
+      idleTimer += 1;
+      if (idleTimer === 5400 && !phoneSmashed) { // 90 seconds @ 60fps
+        if (currentStep === STATE.PHONE_ANSWERED) {
+          setEchoChat('"Boss, the highway exit shutter is located straight ahead at the north end of this central hallway."', 'RULE-01: HINT', 'Guiding subject to decoy exit.', '92.0%');
+        } else if (currentStep === STATE.DECOY_DISCOVERED && !hasStairwellKey) {
+          setEchoChat('"Boss, Dr. Voss stored building maintenance keys in the private library on this floor."', 'RULE-02: HINT', 'Escalating key discovery heuristic.', '94.0%');
+        } else if (currentStep === STATE.LIBRARY_SEARCHED && !doors.find(d=>d.name==='DOOR_STAIRWELL').isOpen) {
+          setMindText(`"The brass key should unlock that stairwell door on the west wall of the hallway."`);
+        } else if (currentStep === STATE.GROUND_FLOOR_REACHED) {
+          setMindText(`"The blueprint on the landing wall shows an egress loop and a secret archive room in the northwest sector."`);
+        }
+      }
+
+      // Movement & Collision (WASD + Arrow Keys + Anti-Stuck Sliding)
+      if (isPlaying && !isModalOpen() && !isPaused) {
+        // Arrow keys rotate camera yaw smoothly
+        if (keys.left) yaw += 0.038;
+        if (keys.right) yaw -= 0.038;
+        camera.rotation.set(pitch, yaw, 0);
+
+        const moveVec = new THREE.Vector3();
+        // Support both WASD and Arrow keys (ArrowUp/ArrowDown move forward/back)
+        if (keys.w || keys.up) moveVec.z -= 1;
+        if (keys.s || keys.down) moveVec.z += 1;
+        if (keys.a) moveVec.x -= 1;
+        if (keys.d) moveVec.x += 1;
+
+        if (moveVec.lengthSq() > 0) {
+          idleTimer = 0;
+          moveVec.normalize();
+          const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
+          const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
+
+          const prevPos = camera.position.clone();
+          const nextPos = camera.position.clone();
+          nextPos.addScaledVector(forward, -moveVec.z * moveSpeed);
+          nextPos.addScaledVector(right, moveVec.x * moveSpeed);
+
+          // Staircase smooth vertical tracking
+          // Stairwell: X in [-4.6, -1.6], Z in [-7.5, -3.5]
+          if (nextPos.x >= -4.6 && nextPos.x <= -1.6 && nextPos.z >= -7.5 && nextPos.z <= -3.5) {
+            const stairT = THREE.MathUtils.clamp((nextPos.z - (-3.5)) / (-7.5 - (-3.5)), 0, 1);
+            nextPos.y = 1.55 + stairT * 3.5;
+          }
+
+          // Anti-Stuck Robust Sliding Collision
+          const wasStuck = isColliding(prevPos.x, prevPos.y, prevPos.z);
+          if (!isColliding(nextPos.x, nextPos.y, nextPos.z)) {
+            camera.position.copy(nextPos);
+          } else {
+            let moved = false;
+            // Slide along X
+            if (!isColliding(nextPos.x, nextPos.y, prevPos.z)) {
+              camera.position.x = nextPos.x;
+              camera.position.y = nextPos.y;
+              moved = true;
+            }
+            // Slide along Z
+            if (!isColliding(prevPos.x, nextPos.y, nextPos.z)) {
+              camera.position.z = nextPos.z;
+              camera.position.y = nextPos.y;
+              moved = true;
+            }
+            // If completely blocked or was already intersecting an obstacle, push forward to free player
+            if (!moved && wasStuck) {
+              camera.position.x = nextPos.x;
+              camera.position.z = nextPos.z;
+            }
+          }
+
+          stepTimer += 1;
+          headBob += 0.14;
+          if (stepTimer % 24 === 0) {
+            audio.playFootstep();
+          }
+        }
+
+        updateActiveRoom();
+        renderMiniMap();
+        checkRaycast();
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    animate(0);
+  </script>
+</body>
+</html>

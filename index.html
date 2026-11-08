@@ -1566,80 +1566,250 @@
       c.width = 1024; c.height = 1024;
       const ctx = c.getContext('2d');
 
-      // Dark emerald/moss velvet gradient
+      // Deep, moody Victorian Forest/Sage velvet base with subtle vertical ombre
       const bgGrad = ctx.createLinearGradient(0, 0, 0, 1024);
-      bgGrad.addColorStop(0, '#0f2418');
-      bgGrad.addColorStop(0.5, '#0a1a11');
-      bgGrad.addColorStop(1, '#06130b');
+      bgGrad.addColorStop(0, '#101c15');
+      bgGrad.addColorStop(0.3, '#14231b');
+      bgGrad.addColorStop(0.7, '#122018');
+      bgGrad.addColorStop(1, '#0c1610');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 1024, 1024);
 
-      // Fine vertical wallpaper seams & shading
-      for (let x = 0; x < 1024; x += 128) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
-        ctx.fillRect(x, 0, 3, 1024);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
-        ctx.fillRect(x + 3, 0, 1, 1024);
+      // Fine linen fabric weave micro-texture
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.018)';
+      for (let y = 0; y < 1024; y += 4) {
+        ctx.fillRect(0, y, 1024, 1);
+      }
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      for (let x = 0; x < 1024; x += 4) {
+        ctx.fillRect(x, 0, 1, 1024);
       }
 
-      // Ornate Gold/Bronze Damask Floral Medallions
-      ctx.strokeStyle = '#b39556';
-      ctx.fillStyle = '#8f743a';
-      ctx.lineWidth = 2.2;
+      // Vertical wallpaper panel seams
+      for (let x = 0; x < 1024; x += 128) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.fillRect(x, 0, 2, 1024);
+        ctx.fillStyle = 'rgba(255, 240, 200, 0.04)';
+        ctx.fillRect(x + 2, 0, 1, 1024);
+      }
+
+      // Intricate Victorian Damask Acanthus Filigree Pattern (Reference Image 2 & 3)
+      ctx.strokeStyle = '#384332';
+      ctx.fillStyle = '#223023';
+      ctx.lineWidth = 1.8;
+
       for (let y = 64; y < 1024; y += 128) {
         for (let x = 64; x < 1024; x += 128) {
+          // Central diamond medallion
           ctx.beginPath();
-          ctx.ellipse(x, y, 12, 18, 0, 0, Math.PI * 2);
+          ctx.ellipse(x, y, 10, 16, 0, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(74, 88, 66, 0.15)';
+          ctx.fill();
+          ctx.strokeStyle = '#44543b';
           ctx.stroke();
 
-          // Acanthus leaf flourishes
+          // Acanthus leaf upper crest
           ctx.beginPath();
-          ctx.moveTo(x, y - 18);
-          ctx.bezierCurveTo(x - 22, y - 38, x - 15, y - 55, x, y - 62);
-          ctx.bezierCurveTo(x + 15, y - 55, x + 22, y - 38, x, y - 18);
+          ctx.moveTo(x, y - 16);
+          ctx.bezierCurveTo(x - 20, y - 32, x - 12, y - 48, x, y - 56);
+          ctx.bezierCurveTo(x + 12, y - 48, x + 20, y - 32, x, y - 16);
+          ctx.strokeStyle = '#4a5b40';
           ctx.stroke();
 
+          // Acanthus leaf lower flourish
           ctx.beginPath();
-          ctx.moveTo(x, y + 18);
-          ctx.bezierCurveTo(x - 20, y + 36, x - 12, y + 48, x, y + 54);
-          ctx.bezierCurveTo(x + 12, y + 48, x + 20, y + 36, x, y + 18);
+          ctx.moveTo(x, y + 16);
+          ctx.bezierCurveTo(x - 18, y + 32, x - 10, y + 44, x, y + 50);
+          ctx.bezierCurveTo(x + 10, y + 44, x + 18, y + 32, x, y + 16);
+          ctx.stroke();
+
+          // Fine connecting floral vine scrolls
+          ctx.beginPath();
+          ctx.moveTo(x - 16, y);
+          ctx.bezierCurveTo(x - 36, y - 12, x - 52, y + 12, x - 64, y);
+          ctx.moveTo(x + 16, y);
+          ctx.bezierCurveTo(x + 36, y - 12, x + 52, y + 12, x + 64, y);
+          ctx.strokeStyle = '#32412e';
           ctx.stroke();
         }
       }
 
-      // Peeling Wallpaper Patches exposing rough aged plaster underneath (Reference Image 2)
-      const peelPatches = [
-        [180, 220, 140, 90],
-        [640, 500, 190, 130],
-        [320, 780, 120, 80],
-        [800, 140, 110, 70]
-      ];
-      peelPatches.forEach(([px, py, pw, ph]) => {
-        ctx.fillStyle = '#2d271f';
-        ctx.beginPath();
-        ctx.ellipse(px + pw/2, py + ph/2, pw/2, ph/2, Math.PI * 0.1, 0, Math.PI * 2);
-        ctx.fill();
+      // Subtle atmospheric aging & hairline cracks (NO cartoonish brown circles!)
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.lineWidth = 1.0;
+      ctx.beginPath();
+      ctx.moveTo(140, 200); ctx.lineTo(190, 260); ctx.lineTo(210, 310);
+      ctx.moveTo(600, 480); ctx.lineTo(650, 520); ctx.lineTo(670, 580);
+      ctx.moveTo(350, 720); ctx.lineTo(390, 780);
+      ctx.stroke();
 
-        ctx.strokeStyle = '#1a1611';
-        ctx.lineWidth = 1.5;
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2.5, 2.0);
+      return tex;
+    }
+
+    // Reference Image 3: Reflective Polished Hardwood Floorboards
+    
+    // Victorian Coffered Ceiling with Plaster Panels & Carved Mahogany Molding
+    // Victorian Coffered Ceiling with Plaster Panels & Carved Mahogany Molding
+    function createCofferedCeilingTexture() {
+      const c = document.createElement('canvas');
+      c.width = 1024; c.height = 1024;
+      const ctx = c.getContext('2d');
+
+      // Warm antique parchment/aged ivory plaster field
+      ctx.fillStyle = '#26221d';
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      // Fine plaster micro-texture
+      for (let i = 0; i < 3000; i++) {
+        const x = Math.random() * 1024;
+        const y = Math.random() * 1024;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 245, 230, 0.025)' : 'rgba(0, 0, 0, 0.035)';
+        ctx.fillRect(x, y, 2, 2);
+      }
+
+      // 4 Deeply Recessed Coffered Ceiling Bays (512x512 grid)
+      [
+        [32, 32, 448, 448],
+        [544, 32, 448, 448],
+        [32, 544, 448, 448],
+        [544, 544, 448, 448]
+      ].forEach(([bx, by, bw, bh]) => {
+        // Outer deep shadow bezel
+        ctx.fillStyle = '#0f0a06';
+        ctx.fillRect(bx - 14, by - 14, bw + 28, bh + 28);
+
+        // Carved Dark Walnut Wood Molding
+        ctx.fillStyle = '#3a2013';
+        ctx.fillRect(bx - 8, by - 8, bw + 16, bh + 16);
+
+        // Warm Golden-Brown Bevel Highlight
+        ctx.fillStyle = '#54301d';
+        ctx.fillRect(bx - 3, by - 3, bw + 6, bh + 6);
+
+        // Recessed Center Plaster Panel
+        ctx.fillStyle = '#2d2822';
+        ctx.fillRect(bx, by, bw, bh);
+
+        // Soft radial shadow towards edges of panel
+        const pGrad = ctx.createRadialGradient(bx + bw/2, by + bh/2, 40, bx + bw/2, by + bh/2, bw/2);
+        pGrad.addColorStop(0, '#38322a');
+        pGrad.addColorStop(0.7, '#28231e');
+        pGrad.addColorStop(1, '#1b1713');
+        ctx.fillStyle = pGrad;
+        ctx.fillRect(bx + 8, by + 8, bw - 16, bh - 16);
+
+        // Delicate central molding medallion ring
+        const cx = bx + bw/2;
+        const cy = by + bh/2;
+        ctx.strokeStyle = '#4e2d1c';
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.moveTo(px + 20, py + 30);
-        ctx.lineTo(px + pw - 20, py + ph - 20);
-        ctx.lineTo(px + pw - 10, py + ph - 5);
+        ctx.arc(cx, cy, 32, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.strokeStyle = '#473d2d';
-        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#6a3e26';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 30, 0, Math.PI * 2);
         ctx.stroke();
       });
 
       const tex = new THREE.CanvasTexture(c);
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-      tex.repeat.set(3, 2);
+      tex.repeat.set(2, 2);
       return tex;
     }
 
-    // Reference Image 3: Reflective Polished Hardwood Floorboards
+    // Weathered Gothic Slate Roof Tiles Texture
+    function createRoofSlateTexture() {
+      const c = document.createElement('canvas');
+      c.width = 1024; c.height = 1024;
+      const ctx = c.getContext('2d');
+
+      // Base dark slate blue-grey
+      ctx.fillStyle = '#1c222b';
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      const rowHeight = 48;
+      const tileWidth = 64;
+      let rowIndex = 0;
+
+      for (let y = 0; y < 1024; y += rowHeight) {
+        const xOffset = (rowIndex % 2 === 0) ? 0 : tileWidth / 2;
+        for (let x = -tileWidth; x < 1024 + tileWidth; x += tileWidth) {
+          const rx = x + xOffset;
+          // Slate tile body variation
+          const shade = 24 + ((rx * 17 + y * 23) % 18);
+          ctx.fillStyle = `rgb(${shade}, ${shade + 4}, ${shade + 10})`;
+          ctx.fillRect(rx + 2, y + 2, tileWidth - 4, rowHeight - 4);
+
+          // Top shadow from overlapping tile above
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+          ctx.fillRect(rx + 2, y + 2, tileWidth - 4, 8);
+
+          // Bottom beveled chipped highlight
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+          ctx.fillRect(rx + 2, y + rowHeight - 4, tileWidth - 4, 2);
+
+          // Vertical grout / gap
+          ctx.fillStyle = '#0a0d12';
+          ctx.fillRect(rx, y, 2, rowHeight);
+        }
+        rowIndex++;
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(4, 8);
+      return tex;
+    }
+
+    // Weathered Victorian Fieldstone Masonry Facade Texture
+    function createFieldstoneTexture() {
+      const c = document.createElement('canvas');
+      c.width = 1024; c.height = 1024;
+      const ctx = c.getContext('2d');
+
+      // Dark mortar base
+      ctx.fillStyle = '#121418';
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      const rowHeight = 64;
+      const blockWidth = 128;
+      let r = 0;
+
+      for (let y = 0; y < 1024; y += rowHeight) {
+        const xShift = (r % 2 === 0) ? 0 : blockWidth / 2;
+        for (let x = -blockWidth; x < 1024 + blockWidth; x += blockWidth) {
+          const bx = x + xShift;
+          const varR = 30 + ((bx * 13 + y * 19) % 16);
+          const varG = varR + ((bx * 7) % 6);
+          const varB = varR + 8;
+
+          ctx.fillStyle = `rgb(${varR}, ${varG}, ${varB})`;
+          ctx.fillRect(bx + 3, y + 3, blockWidth - 6, rowHeight - 6);
+
+          // Beveled stone edges
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+          ctx.fillRect(bx + 3, y + 3, blockWidth - 6, 3);
+          ctx.fillRect(bx + 3, y + 3, 3, rowHeight - 6);
+
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+          ctx.fillRect(bx + 3, y + rowHeight - 6, blockWidth - 6, 3);
+          ctx.fillRect(bx + blockWidth - 6, y + 3, 3, rowHeight - 6);
+        }
+        r++;
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(3, 4);
+      return tex;
+    }
+
     function createFloorPlankTexture() {
       const c = document.createElement('canvas');
       c.width = 1024; c.height = 1024;
@@ -1851,11 +2021,21 @@
       emissive: 0x120804
     });
     const ceilingMat = new THREE.MeshStandardMaterial({
-      color: 0x080c18,
-      roughness: 0.95,
-      polygonOffset: true,
-      polygonOffsetFactor: 1,
-      polygonOffsetUnits: 1
+      map: createCofferedCeilingTexture(),
+      roughness: 0.60,
+      metalness: 0.08,
+      side: THREE.DoubleSide
+    });
+    const manorFacadeMat = new THREE.MeshStandardMaterial({
+      map: createFieldstoneTexture(),
+      roughness: 0.85,
+      metalness: 0.05
+    });
+    const roofSlateMat = new THREE.MeshStandardMaterial({
+      map: createRoofSlateTexture(),
+      roughness: 0.45,
+      metalness: 0.18,
+      side: THREE.DoubleSide
     });
     const brassMat = new THREE.MeshStandardMaterial({
       color: 0xd4af37,
@@ -1877,8 +2057,16 @@
 
     const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.rotation.order = 'YXZ';
+    window.camera = camera;
+    window.scene = scene;
     camera.position.set(-4.2, 5.05, 8.0); // Open floor in 1F Lounge
-    let pitch = -0.22, yaw = Math.PI; // Facing South directly at the glowing smartphone
+    let pitch = -0.22, yaw = Math.PI;
+    window.setCameraPose = function(x, y, z, p = 0, yA = 0) {
+      camera.position.set(x, y, z);
+      pitch = p;
+      yaw = yA;
+      camera.rotation.set(p, yA, 0);
+    }; // Facing South directly at the glowing smartphone
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', precision: 'highp' });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -2884,6 +3072,260 @@
     drivewayFloor.rotation.x = -Math.PI / 2;
     drivewayFloor.position.set(0, 0, 20.0);
     scene.add(drivewayFloor);
+
+    // =========================================================================
+    // MASTER ARCHITECTURAL ROOF & EXTERIOR ENCLOSURE SYSTEM
+    // =========================================================================
+
+    
+    // Decoy Shutter Side Jamb Walls (Z = -12.0, X in [-1.6, -1.2] and [1.2, 1.6])
+    buildWall(-1.4, 5.0, -12.0, 0.4, 3.2, 0.2, wallpaperMat, 'shutter_jamb_L');
+    buildWall(1.4, 5.0, -12.0, 0.4, 3.2, 0.2, wallpaperMat, 'shutter_jamb_R');
+
+    // Ground Floor Exterior Walls Facing Courtyard at Z = 12.0
+    // West GF exterior wall below Lounge (X: -7.2 to -1.6)
+    buildWall(-4.4, 1.6, 12.0, 5.6, 3.2, 0.35, manorFacadeMat, 'exterior_south_GF_west');
+    // East GF exterior stone cladding outside Dining Room (X: 1.6 to 7.2)
+    buildWall(4.4, 1.6, 12.18, 5.6, 3.2, 0.35, manorFacadeMat, 'exterior_south_GF_east');
+
+    // Reinforced Industrial Blast Door Bunker Frame (Z = 12.0)
+    const bunkerHeader = new THREE.Mesh(
+      new THREE.BoxGeometry(3.6, 0.45, 0.5),
+      wainscotWoodMat
+    );
+    bunkerHeader.position.set(0, 2.7, 12.15);
+    scene.add(bunkerHeader);
+
+    [-1.55, 1.55].forEach(px => {
+      const bunkerPillar = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 2.7, 0.5),
+        wainscotWoodMat
+      );
+      bunkerPillar.position.set(px, 1.35, 12.15);
+      scene.add(bunkerPillar);
+    });
+
+    // 1. Infill Missing Interior Perimeter Walls (Eliminate All Sky Voids!)
+    // Utility Corridor East Wall (Z: -8 to -4, X = 1.6)
+    buildWall(1.6, 1.6, -6.0, 0.2, 3.2, 4.0, wallpaperMat, 'util_east_GF');
+
+    // Stairwell Under-Stairs West Wall on GF (Z: -8 to -4, X = -4.6)
+    buildWall(-4.6, 1.6, -6.0, 0.2, 3.2, 4.0, wallpaperMat, 'stair_west_GF');
+
+    // Stairwell North Wall on GF (Z = -8, X: -4.6 to -1.6)
+    buildWall(-3.1, 1.6, -8.0, 3.0, 3.2, 0.2, wallpaperMat, 'stair_north_GF');
+
+    // Decoy Shutter Top Header Lintel Wall (Z = -12.0, Y: 6.1 to 6.8)
+    buildWall(0, 6.45, -12.0, 3.2, 0.7, 0.2, wallpaperMat, 'shutter_lintel_1F');
+
+    // Infill 1F West Exterior Gap between Lounge and Study (Z: 4.0 to 6.0, X = -7.0)
+    buildWall(-7.0, 5.2, 5.0, 0.2, 3.2, 2.0, wallpaperMat, 'west_lightwell_1F');
+
+    // Infill 1F East Exterior Gap between Bedroom and Library (Z: 4.0 to 6.0, X = 7.0)
+    buildWall(7.0, 5.2, 5.0, 0.2, 3.2, 2.0, wallpaperMat, 'east_lightwell_1F');
+
+    // 2. Master Continuous Ceiling Slabs (Completely Seals All Gaps into Space!)
+    // 1F Master Ceiling Slab at Y = 6.80 spanning the entire upper house footprint!
+    const masterCeil1F = new THREE.Mesh(
+      new THREE.BoxGeometry(14.4, 0.12, 24.4),
+      ceilingMat
+    );
+    masterCeil1F.position.set(0, 6.80, 0);
+    scene.add(masterCeil1F);
+
+    // GF Utility/Landing Master Ceiling Slab at Y = 3.20 (Z: -9 to 4, X: -7.2 to 1.6)
+    const masterCeilGF_West = new THREE.Mesh(
+      new THREE.BoxGeometry(9.0, 0.10, 13.0),
+      ceilingMat
+    );
+    masterCeilGF_West.position.set(-2.8, 3.20, -2.5);
+    scene.add(masterCeilGF_West);
+
+    // 3. Exterior Front Facade of Dr. Voss's Manor above Blast Door (Z = 12.0)
+    // Dressed Gothic Fieldstone Facade from Y = 3.2 to 6.8 (Facing Courtyard / Getaway Car)
+    const exteriorFacade2F = new THREE.Mesh(
+      new THREE.BoxGeometry(14.4, 3.6, 0.35),
+      manorFacadeMat
+    );
+    exteriorFacade2F.position.set(0, 5.0, 12.18);
+    exteriorFacade2F.castShadow = true;
+    exteriorFacade2F.receiveShadow = true;
+    scene.add(exteriorFacade2F);
+
+    // Carved Stone Architrave Cornice above Blast Door (Z = 12.0, Y = 3.2)
+    const blastCornice = new THREE.Mesh(
+      new THREE.BoxGeometry(14.8, 0.24, 0.50),
+      manorFacadeMat
+    );
+    blastCornice.position.set(0, 3.20, 12.25);
+    scene.add(blastCornice);
+
+    // Arched 2nd-Floor Manor Windows on Exterior Facade
+    [-4.3, 4.3].forEach(wx => {
+      const winFrame = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 1.8, 0.12),
+        wainscotWoodMat
+      );
+      winFrame.position.set(wx, 5.2, 12.38);
+      scene.add(winFrame);
+
+      const winGlass = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.2, 1.6),
+        new THREE.MeshStandardMaterial({
+          color: 0xffedd5,
+          emissive: 0xffedd5,
+          emissiveIntensity: 0.8,
+          roughness: 0.1
+        })
+      );
+      winGlass.position.set(wx, 5.2, 12.45);
+      scene.add(winGlass);
+    });
+
+    // 4. Master Pitched Gable Slate Roof Structure (Rising from Y = 6.8 to Ridge Y = 9.8)
+    // Mansion Width: 14.4m (X: -7.2 to 7.2), Eaves extend to X = -7.7 and +7.7
+    // Ridge is at X = 0, Y = 9.8, Length = 25.4m (Z: -12.7 to 12.7)
+    // West Roof Pitch: Slopes from (-7.7, 6.8) up to (0, 9.8)
+    const roofPitchAngle = Math.atan2(3.0, 7.7); // ~21.3 degrees
+    const roofPitchLength = Math.sqrt(3.0 * 3.0 + 7.7 * 7.7); // ~8.26m
+
+    // West Pitch Slab
+    const roofWest = new THREE.Mesh(
+      new THREE.BoxGeometry(roofPitchLength + 0.4, 0.18, 25.4),
+      roofSlateMat
+    );
+    roofWest.position.set(-3.85, 8.30, 0);
+    roofWest.rotation.z = roofPitchAngle;
+    roofWest.castShadow = true;
+    roofWest.receiveShadow = true;
+    scene.add(roofWest);
+
+    // East Pitch Slab
+    const roofEast = new THREE.Mesh(
+      new THREE.BoxGeometry(roofPitchLength + 0.4, 0.18, 25.4),
+      roofSlateMat
+    );
+    roofEast.position.set(3.85, 8.30, 0);
+    roofEast.rotation.z = -roofPitchAngle;
+    roofEast.castShadow = true;
+    roofEast.receiveShadow = true;
+    scene.add(roofEast);
+
+    // Central Roof Ridge Cap Beam at Y = 9.85
+    const roofRidge = new THREE.Mesh(
+      new THREE.BoxGeometry(0.50, 0.20, 25.6),
+      manorFacadeMat
+    );
+    roofRidge.position.set(0, 9.85, 0);
+    scene.add(roofRidge);
+
+    // Heavy Timber Eaves Fascia Beams along the Roof Edges (Left & Right)
+    [-7.7, 7.7].forEach(ex => {
+      const eaveFascia = new THREE.Mesh(
+        new THREE.BoxGeometry(0.25, 0.25, 25.6),
+        wainscotWoodMat
+      );
+      eaveFascia.position.set(ex, 6.75, 0);
+      scene.add(eaveFascia);
+    });
+
+    // 5. South Triangular Pediment Gable Wall (Facing Courtyard / Driveway at Z = 12.2)
+    const gableShape = new THREE.Shape();
+    gableShape.moveTo(-7.4, 6.8);
+    gableShape.lineTo(0, 9.8);
+    gableShape.lineTo(7.4, 6.8);
+    gableShape.closePath();
+
+    const gableGeo = new THREE.ShapeGeometry(gableShape);
+    const southGableMesh = new THREE.Mesh(gableGeo, manorFacadeMat);
+    southGableMesh.position.set(0, 0, 12.25);
+    scene.add(southGableMesh);
+
+    // North Triangular Pediment Gable Wall (Facing Woods at Z = -12.2)
+    const northGableMesh = new THREE.Mesh(gableGeo, manorFacadeMat);
+    northGableMesh.position.set(0, 0, -12.25);
+    northGableMesh.rotation.y = Math.PI;
+    scene.add(northGableMesh);
+
+    // Attic Rose Window on South Gable
+    const atticWindow = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.7, 0.7, 0.15, 24),
+      wainscotWoodMat
+    );
+    atticWindow.position.set(0, 8.1, 12.30);
+    atticWindow.rotation.x = Math.PI / 2;
+    scene.add(atticWindow);
+
+    const atticGlass = new THREE.Mesh(
+      new THREE.CircleGeometry(0.55, 24),
+      new THREE.MeshStandardMaterial({
+        color: 0xfde047,
+        emissive: 0xf59e0b,
+        emissiveIntensity: 0.9,
+        roughness: 0.2
+      })
+    );
+    atticGlass.position.set(0, 8.1, 12.40);
+    scene.add(atticGlass);
+
+    // 6. Victorian Masonry Chimney Stacks
+    // West Chimney (Lounge Fireplace Flue): X = -4.5, Z = 9.0, rising up to Y = 11.2
+    const chimneyWest = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 4.4, 1.2),
+      manorFacadeMat
+    );
+    chimneyWest.position.set(-4.5, 9.0, 9.0);
+    chimneyWest.castShadow = true;
+    scene.add(chimneyWest);
+
+    // Terracotta Chimney Pots on West Chimney
+    [-0.25, 0.25].forEach(cpz => {
+      const pot = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.18, 0.18, 0.7, 16),
+        new THREE.MeshStandardMaterial({ color: 0x9a3412, roughness: 0.7 })
+      );
+      pot.position.set(-4.5, 11.45, 9.0 + cpz);
+      scene.add(pot);
+    });
+
+    // East Chimney (Kitchen Hearth Flue): X = 4.5, Z = 0.0, rising up to Y = 11.2
+    const chimneyEast = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 4.4, 1.2),
+      manorFacadeMat
+    );
+    chimneyEast.position.set(4.5, 9.0, 0.0);
+    chimneyEast.castShadow = true;
+    scene.add(chimneyEast);
+
+    // Terracotta Chimney Pots on East Chimney
+    [-0.25, 0.25].forEach(cpz => {
+      const pot = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.18, 0.18, 0.7, 16),
+        new THREE.MeshStandardMaterial({ color: 0x9a3412, roughness: 0.7 })
+      );
+      pot.position.set(4.5, 11.45, 0.0 + cpz);
+      scene.add(pot);
+    });
+
+    // 7. Decoy Balcony Timber Canopy Roof (Overhang at Z = -12 to -15)
+    const balconyCanopy = new THREE.Mesh(
+      new THREE.BoxGeometry(3.6, 0.14, 3.4),
+      roofSlateMat
+    );
+    balconyCanopy.position.set(0, 6.80, -13.5);
+    scene.add(balconyCanopy);
+
+    // Wrought-iron decorative support pillars for balcony canopy
+    [-1.6, 1.6].forEach(px => {
+      const pillar = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.04, 0.04, 3.2, 12),
+        brassMat
+      );
+      pillar.position.set(px, 5.2, -15.0);
+      scene.add(pillar);
+    });
+
+
 
     // Escape SUV Vehicle
     const suvBody = new THREE.Mesh(
